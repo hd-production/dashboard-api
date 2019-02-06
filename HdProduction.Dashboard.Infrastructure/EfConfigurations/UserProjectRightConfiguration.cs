@@ -1,0 +1,30 @@
+using HdProduction.Dashboard.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
+{
+  public class UserProjectRightConfiguration : IEntityTypeConfiguration<UserProjectRights>
+  {
+
+    public void Configure(EntityTypeBuilder<UserProjectRights> builder)
+    {
+      builder.ToTable("user_project");
+
+      builder.HasKey(up => new {up.UserId, up.ProjectId});
+
+      builder.HasOne(up => up.User)
+        .WithMany(u => u.ProjectRights)
+        .HasForeignKey(up => up.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.HasOne(up => up.Project)
+        .WithMany(p => p.UserRights)
+        .HasForeignKey(up => up.ProjectId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Property(up => up.Right)
+        .IsRequired();
+    }
+  }
+}
