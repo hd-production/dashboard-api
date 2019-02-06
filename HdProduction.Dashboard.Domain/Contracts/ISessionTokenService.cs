@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace HdProduction.Dashboard.Domain.Contracts
 {
-  public interface IJwtTokenService
+  public interface ISessionTokenService
   {
     string CreateToken(User user);
   }

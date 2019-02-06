@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
-using HdProduction.Dashboard.Application.Auth;
 using HdProduction.Dashboard.Application.Queries.Users;
 using HdProduction.Dashboard.Domain.Contracts;
 using HdProduction.Dashboard.Infrastructure;
@@ -41,7 +41,7 @@ namespace HdProduction.Dashboard.Api
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserQuery, UserQuery>();
-            services.AddSingleton<IJwtTokenService, JwtTokenService>(c => new JwtTokenService(Configuration.GetValue<string>("RsaKeysPath:Private")));
+            services.AddSingleton<ISessionTokenService, JwtTokenService>(c => new JwtTokenService(Configuration.GetValue<string>("RsaKeysPath:Private")));
 
             services.AddSingleton(AutoMapperConfig.Configure());
 

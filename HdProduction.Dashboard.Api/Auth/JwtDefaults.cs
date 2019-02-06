@@ -1,4 +1,4 @@
-namespace HdProduction.Dashboard.Application.Auth
+namespace HdProduction.Dashboard.Api.Auth
 {
   public static class JwtDefaults
   {

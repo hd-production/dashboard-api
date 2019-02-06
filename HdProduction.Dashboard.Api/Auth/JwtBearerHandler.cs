@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
-namespace HdProduction.Dashboard.Application.Auth
+namespace HdProduction.Dashboard.Api.Auth
 {
   public class JwtAuthBearerHandler : AuthenticationHandler<JwtOptions>
   {

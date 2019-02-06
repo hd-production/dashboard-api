@@ -10,12 +10,12 @@ namespace HdProduction.Dashboard.Application.Commands.Users
   public class AuthenticateCmdHandler : IRequestHandler<AuthenticateCmd, (string jwtToken, string refreshToken)>
   {
     private readonly IUserRepository _userRepository;
-    private readonly IJwtTokenService _jwtTokenService;
+    private readonly ISessionTokenService _sessionTokenService;
 
-    public AuthenticateCmdHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService)
+    public AuthenticateCmdHandler(IUserRepository userRepository, ISessionTokenService sessionTokenService)
     {
       _userRepository = userRepository;
-      _jwtTokenService = jwtTokenService;
+      _sessionTokenService = sessionTokenService;
     }
 
     public async Task<(string jwtToken, string refreshToken)> Handle(AuthenticateCmd request, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ namespace HdProduction.Dashboard.Application.Commands.Users
 
       await _userRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-      return (_jwtTokenService.CreateToken(user), refreshToken);
+      return (_sessionTokenService.CreateToken(user), refreshToken);
     }
 
     private static BusinessLogicException InvalidCredentials()

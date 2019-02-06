@@ -10,8 +10,6 @@ namespace HdProduction.Dashboard.Infrastructure
 {
   public class ApplicationContextDesignFactory : IDesignTimeDbContextFactory<ApplicationContext>
   {
-    private const string DefaultConnString = "Data Source=cftool.db";
-
     public ApplicationContext CreateDbContext(string[] args)
     {
       IConfigurationRoot configuration = new ConfigurationBuilder()

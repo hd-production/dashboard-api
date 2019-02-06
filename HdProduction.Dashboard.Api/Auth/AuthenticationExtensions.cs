@@ -1,8 +1,7 @@
-using HdProduction.Dashboard.Application.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HdProduction.Dashboard.Api.Configuration
+namespace HdProduction.Dashboard.Api.Auth
 {
   public static class AuthenticationExtensions
   {

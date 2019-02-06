@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 
-namespace HdProduction.Dashboard.Application.Auth
+namespace HdProduction.Dashboard.Api.Auth
 {
   public class JwtOptions : AuthenticationSchemeOptions
   {
