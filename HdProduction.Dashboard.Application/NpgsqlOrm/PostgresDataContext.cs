@@ -9,12 +9,9 @@ using NpgsqlTypes;
 
 namespace HdProduction.Dashboard.Application.NpgsqlOrm
 {
-  public class PostresDataContext : IDisposable
+  public class PostgresDataContext : IDisposable
   {
     public const int ParameterAutoSize = 0;
-    public const int MinNVarCharParamSize = 4000;
-    public const int MinParamSize = 8000;
-    public const int MaxParamSize = -1;
 
     private string _connectionString;
     private Action _onCommit;
@@ -22,7 +19,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
 
     #region Initialization
 
-    public PostresDataContext(string connectionString)
+    public PostgresDataContext(string connectionString)
     {
       try
       {
@@ -78,48 +75,23 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       }
     }
 
-    /// <summary>
-    /// Resets PostresDataContext into initial state with same connection string.
-    /// </summary>
-    /// <returns></returns>
-    public PostresDataContext Reset()
-    {
-      Close();
-      Command = new NpgsqlCommand();
-      return this;
-    }
-
-    /// <summary>
-    /// Resets PostresDataContext into initial state.
-    /// </summary>
-    /// <returns></returns>
-    public PostresDataContext Reset(string connectionString)
-    {
-      Reset();
-      _connectionString = connectionString;
-      return this;
-    }
-
     #endregion
 
     #region Commands
 
     #region Sql and StoredProc
 
-    public PostresDataContext Sql(StringBuilder sql) { return Sql(sql.ToString()); }
-    public PostresDataContext Sql(string sql, object arg0) { return Sql(String.Format(sql, arg0)); }
-    public PostresDataContext Sql(string sql, object arg0, object arg1) { return Sql(String.Format(sql, arg0, arg1)); }
-    public PostresDataContext Sql(string sql, object arg0, object arg1, object arg2) { return Sql(String.Format(sql, arg0, arg1, arg2)); }
-    public PostresDataContext Sql(string sql, params object[] args) { return Sql(String.Format(sql, args)); }
+    public PostgresDataContext Sql(StringBuilder sql) { return Sql(sql.ToString()); }
+    public PostgresDataContext Sql(string sql, params object[] args) { return Sql(String.Format(sql, args)); }
 
-    public PostresDataContext Sql(string sql)
+    public PostgresDataContext Sql(string sql)
     {
       Command.CommandText = sql;
       Command.CommandType = CommandType.Text;
       return this;
     }
 
-    public PostresDataContext StoredProc(string storedProcName)
+    public PostgresDataContext StoredProc(string storedProcName)
     {
       Command.CommandText = storedProcName;
       Command.CommandType = CommandType.StoredProcedure;
@@ -130,18 +102,9 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
 
     #region Parameters
 
-    public PostresDataContext Set<T>(string name, T value) { return Set(name, TypeMappings.ToSqlDbType<T>(), value); }
-    public PostresDataContext Set(string name, NpgsqlDbType dataType, object value) { SetParam(name, dataType, ParameterAutoSize, value); return this; }
-    public PostresDataContext Set(string name, NpgsqlDbType dataType, int size, object value) { SetParam(name, dataType, size, value); return this; }
-
-    public PostresDataContext Out<T>(string name) { return Out(name, TypeMappings.ToSqlDbType<T>()); }
-    public PostresDataContext Out(string name, NpgsqlDbType dataType) { SetParam(name, dataType, ParameterDirection.Output); return this; }
-
-    public PostresDataContext SetOut<T>(string name, T value) { return SetOut(name, TypeMappings.ToSqlDbType<T>(), value); }
-    public PostresDataContext SetOut(string name, NpgsqlDbType dataType, object value) { SetParam(name, dataType, value, ParameterDirection.InputOutput); return this; }
-
-    public PostresDataContext Return<T>(string name, T value) { return Return(name, TypeMappings.ToSqlDbType<T>(), value); }
-    public PostresDataContext Return(string name, NpgsqlDbType dataType, object value) { SetParam(name, dataType, value, ParameterDirection.ReturnValue); return this; }
+    public PostgresDataContext Set<T>(string name, T value) { return Set(name, TypeMappings.ToSqlDbType<T>(), value); }
+    public PostgresDataContext Set(string name, NpgsqlDbType dataType, object value) { SetParam(name, dataType, ParameterAutoSize, value); return this; }
+    public PostgresDataContext Set(string name, NpgsqlDbType dataType, int size, object value) { SetParam(name, dataType, size, value); return this; }
 
     private void SetParam(string name, NpgsqlDbType dbType, ParameterDirection direction)
     {
@@ -162,7 +125,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
 
     #region Options
 
-    public PostresDataContext Timeout(int seconds = 30)
+    public PostgresDataContext Timeout(int seconds = 30)
     {
       Command.CommandTimeout = seconds;
       return this;
@@ -214,47 +177,6 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
 
     #endregion
 
-    #region Sql Union Select
-
-    public string SqlUnionSelect<T>(string field, IEnumerable<T> values, bool unionAll = false)
-    {
-      return SqlUnionSelect(field, field, values, unionAll);
-    }
-
-    public string SqlUnionSelect<T>(string field, string param, IEnumerable<T> values, bool unionAll = false)
-    {
-      return SqlUnionSelect(field, param, TypeMappings.ToSqlDbType<T>(), values, unionAll);
-    }
-
-    public string SqlUnionSelect<T>(string field, string param, NpgsqlDbType dataType, IEnumerable<T> values, bool unionAll)
-    {
-      var enumerator = values?.GetEnumerator();
-
-      if (enumerator == null || !enumerator.MoveNext())
-        return String.Empty;
-
-      param = "@" + param;
-
-      int i = 0;
-      int count = 0;
-      do
-      {
-        Set(param + i, dataType, enumerator.Current);
-        i++;
-        count++;
-      } while (enumerator.MoveNext());
-
-
-      var sb = new StringBuilder();
-      sb.AppendFormat("SELECT ({0}0)", param);
-      for (int j = 0; j < count; j++)
-      {
-        sb.AppendFormat(" UNION{0} SELECT({1}{2})", unionAll ? " ALL " : String.Empty, param, j);
-      }
-
-      return sb.ToString();
-    }
-
     #endregion
 
     #region Execution
@@ -282,62 +204,6 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
     #endregion
 
     #region Reading
-
-    #region ReadOut
-
-    public T ReadOut<T>(string outParamName)
-    {
-      return ExecuteSafe(() =>
-      {
-        Out<T>(outParamName);
-        Command.ExecuteNonQuery();
-        return (T)Command.Parameters[outParamName].Value;
-      });
-    }
-
-    public T ReadOutOrDefault<T>(string outParamName, T defaultValue = default(T))
-    {
-      return ExecuteSafe(() =>
-      {
-        Out<T>(outParamName);
-        Command.ExecuteNonQuery();
-        var value = Command.Parameters[outParamName].Value;
-        return value == null || DBNull.Value.Equals(value) ? defaultValue : (T)value;
-      });
-    }
-
-    public async Task<T> ReadOutAsync<T>(string outParamName)
-    {
-      return await ReadOutAsync<T>(outParamName, CancellationToken.None);
-    }
-
-    public async Task<T> ReadOutAsync<T>(string outParamName, CancellationToken cancellationToken)
-    {
-      return await ExecuteSafeAsync(async () =>
-      {
-        Out<T>(outParamName);
-        await Command.ExecuteNonQueryAsync(cancellationToken);
-        return (T)Command.Parameters[outParamName].Value;
-      }, cancellationToken);
-    }
-
-    public async Task<T> ReadOutOrDefaultAsync<T>(string outParamName, T defaultValue = default(T))
-    {
-      return await ReadOutOrDefaultAsync(outParamName, CancellationToken.None, defaultValue);
-    }
-
-    public async Task<T> ReadOutOrDefaultAsync<T>(string outParamName, CancellationToken cancellationToken, T defaultValue = default(T))
-    {
-      return await ExecuteSafeAsync(async () =>
-      {
-        Out<T>(outParamName);
-        await Command.ExecuteNonQueryAsync(cancellationToken);
-        var value = Command.Parameters[outParamName].Value;
-        return value == null || DBNull.Value.Equals(value) ? defaultValue : (T)value;
-      }, cancellationToken);
-    }
-
-    #endregion
 
     #region Read
 
@@ -452,11 +318,6 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return ReadAll<List<T>, T>(readItem);
     }
 
-    public HashSet<T> ReadAllHashSet<T>(Func<DataRecord, T> readItem)
-    {
-      return ReadAll<HashSet<T>, T>(readItem);
-    }
-
     public TCollection ReadAll<TCollection, TValue>(Func<DataRecord, TValue> readItem)
       where TCollection : ICollection<TValue>, new()
     {
@@ -484,16 +345,6 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return await ReadAllAsync<List<T>, T>(readItem, cancellationToken);
     }
 
-    public async Task<HashSet<T>> ReadAllHashSetAsync<T>(Func<DataRecord, T> readItem)
-    {
-      return await ReadAllAsync<HashSet<T>, T>(readItem, CancellationToken.None);
-    }
-
-    public async Task<HashSet<T>> ReadAllHashSetAsync<T>(Func<DataRecord, T> readItem, CancellationToken cancellationToken)
-    {
-      return await ReadAllAsync<HashSet<T>, T>(readItem, cancellationToken);
-    }
-
     public async Task<TCollection> ReadAllAsync<TCollection, TValue>(Func<DataRecord, TValue> readItem)
       where TCollection : ICollection<TValue>, new()
     {
@@ -515,22 +366,6 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
 
         return collection;
       }, cancellationToken);
-    }
-
-    public IEnumerable<T> ReadAllByYield<T>(Func<DataRecord, T> readItem)
-    {
-      PreExecute();
-      try
-      {
-        var record = new DataRecord();
-        using (var reader = Command.ExecuteReader())
-          while (record.Read(reader))
-            yield return readItem(record);
-      }
-      finally
-      {
-        ClearCommand();
-      }
     }
 
     public List<DataRecord> ReadAllRecords()
@@ -592,7 +427,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       _onRollback = (Action)Delegate.Combine(_onRollback, onRollback);
     }
 
-    public PostresDataContext BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
+    public PostgresDataContext BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
     {
       if (Transaction != null)
         throw new InvalidOperationException("Transaction already exists");
@@ -602,12 +437,12 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return this;
     }
 
-    public async Task<PostresDataContext> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
+    public async Task<PostgresDataContext> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
     {
       return await BeginTransactionAsync(CancellationToken.None, isolationLevel);
     }
 
-    public async Task<PostresDataContext> BeginTransactionAsync(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
+    public async Task<PostgresDataContext> BeginTransactionAsync(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.RepeatableRead)
     {
       if (Transaction != null)
         throw new InvalidOperationException("Transaction already exists");
@@ -617,7 +452,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return this;
     }
 
-    public PostresDataContext Commit()
+    public PostgresDataContext Commit()
     {
       Transaction.Commit();
       Transaction.Dispose();
@@ -632,12 +467,12 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return this;
     }
 
-    public async Task<PostresDataContext> CommitAsync()
+    public async Task<PostgresDataContext> CommitAsync()
     {
       return await CommitAsync(CancellationToken.None);
     }
 
-    public async Task<PostresDataContext> CommitAsync(CancellationToken cancellationToken)
+    public async Task<PostgresDataContext> CommitAsync(CancellationToken cancellationToken)
     {
       await Transaction.CommitAsync(cancellationToken);
       Transaction.Dispose();
@@ -652,7 +487,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return this;
     }
 
-    public PostresDataContext Rollback()
+    public PostgresDataContext Rollback()
     {
       Transaction.Rollback();
       Transaction.Dispose();
@@ -667,12 +502,12 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return this;
     }
 
-    public async Task<PostresDataContext> RollbackAsync()
+    public async Task<PostgresDataContext> RollbackAsync()
     {
       return await RollbackAsync(CancellationToken.None);
     }
 
-    public async Task<PostresDataContext> RollbackAsync(CancellationToken cancellationToken)
+    public async Task<PostgresDataContext> RollbackAsync(CancellationToken cancellationToken)
     {
       await Transaction.RollbackAsync(cancellationToken);
       Transaction.Dispose();
@@ -780,8 +615,6 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
         ClearCommand();
       }
     }
-
-    #endregion
 
     #endregion
   }

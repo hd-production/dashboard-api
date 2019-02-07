@@ -7,9 +7,9 @@ namespace HdProduction.Dashboard.Api.Auth
   {
     public ProjectRight MinRight { get; }
 
-    public ProjectAccessRequirement(ProjectRight minAccessMinRight)
+    public ProjectAccessRequirement(ProjectRight minAccessRight)
     {
-      MinRight = minAccessMinRight;
+      MinRight = minAccessRight;
     }
   }
 }

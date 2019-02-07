@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using HdProduction.Dashboard.Application.Models;
 using HdProduction.Dashboard.Domain.Contracts;
+using HdProduction.Dashboard.Domain.Exceptions;
 
 namespace HdProduction.Dashboard.Application.Queries.Users
 {
@@ -23,7 +24,8 @@ namespace HdProduction.Dashboard.Application.Queries.Users
 
     public async Task<UserReadModel> FindAsync(long id)
     {
-      return _mapper.Map<UserReadModel>(await _userRepository.FindAsync(id, false));
+      return _mapper.Map<UserReadModel>(await _userRepository.FindAsync(id, false)
+                                        ?? throw new EntityNotFoundException("User not found"));
     }
   }
 }

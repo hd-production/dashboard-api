@@ -1,4 +1,3 @@
-using System;
 using Npgsql;
 
 namespace HdProduction.Dashboard.Application.NpgsqlOrm
@@ -6,7 +5,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
   public interface IDatabaseConnector
   {
     NpgsqlConnection NewConnection();
-    PostresDataContext NewDataContext();
+    PostgresDataContext NewDataContext();
   }
 
   public class DatabaseConnector : IDatabaseConnector
@@ -23,9 +22,9 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return new NpgsqlConnection(_connection);
     }
 
-    public PostresDataContext NewDataContext()
+    public PostgresDataContext NewDataContext()
     {
-      return new PostresDataContext(_connection);
+      return new PostgresDataContext(_connection);
     }
   }
 }

@@ -12,9 +12,10 @@ namespace HdProduction.Dashboard.Infrastructure.Extensions
       {
         await action();
       }
-      catch (Exception e)
+      catch (Exception)
       {
         transaction.Rollback();
+        throw;
       }
       transaction.Commit();
     }
