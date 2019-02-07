@@ -2,6 +2,8 @@ namespace HdProduction.Dashboard.Domain.Entities
 {
   public enum ProjectRight
   {
-    None, Creator, Admin
+    None = 0,
+    Admin = 20,
+    Creator = 25
   }
 }

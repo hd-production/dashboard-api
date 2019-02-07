@@ -3,9 +3,9 @@ using HdProduction.Dashboard.Domain.Entities;
 
 namespace HdProduction.Dashboard.Domain.Contracts
 {
-  public interface IProjectRepository
+  public interface IProjectRepository : IRepository<Project, long>
   {
-    Task<Project> FindAsync(long id, bool withTracking = true);
-    void Add(Project project);
+    void Add(UserProjectRights rights);
+    Task<UserProjectRights> FindRightAsync(long projectId, long userId);
   }
 }

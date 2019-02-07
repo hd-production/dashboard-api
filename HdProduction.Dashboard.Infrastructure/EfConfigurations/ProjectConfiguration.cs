@@ -8,7 +8,7 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
   {
     protected override void ConfigureNext(EntityTypeBuilder<Project> builder)
     {
-      builder.ToTable("project");
+      builder.ToTable(ProjectMetadata.Table);
 
       builder.Property(p => p.Name)
         .IsRequired()

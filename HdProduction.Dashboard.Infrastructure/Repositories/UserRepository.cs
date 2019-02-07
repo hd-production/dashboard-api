@@ -21,6 +21,11 @@ namespace HdProduction.Dashboard.Infrastructure.Repositories
       _context.Users.Add(user);
     }
 
+    public void Remove(User entity)
+    {
+      _context.Users.Remove(entity);
+    }
+
     public Task<User> FindAsync(long id, bool withTracking = true)
     {
       return withTracking

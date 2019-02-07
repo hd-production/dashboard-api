@@ -1,16 +1,21 @@
 ﻿using System.Reflection;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
+using HdProduction.Dashboard.Application.NpgsqlOrm;
+using HdProduction.Dashboard.Application.Queries.Projects;
 using HdProduction.Dashboard.Application.Queries.Users;
 using HdProduction.Dashboard.Domain.Contracts;
+using HdProduction.Dashboard.Domain.Entities;
 using HdProduction.Dashboard.Infrastructure;
 using HdProduction.Dashboard.Infrastructure.Repositories;
 using log4net;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
@@ -37,14 +42,26 @@ namespace HdProduction.Dashboard.Api
 
             services.AddJwtAuthentication(Configuration.GetValue<string>("RsaKeysPath:Public"));
 
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy(Policy.ProjectAdminAccess, policy => policy.Requirements.Add(new ProjectAccessRequirement(ProjectRight.Admin)));
+                opt.AddPolicy(Policy.ProjectCreatorAccess, policy => policy.Requirements.Add(new ProjectAccessRequirement(ProjectRight.Creator)));
+            });
+            services.AddSingleton<IAuthorizationHandler, ProjectAccessRequirementHandler>();
+
+            services.AddHttpContextAccessor();
             services.AddMediatR();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserQuery, UserQuery>();
             services.AddSingleton<ISessionTokenService, JwtTokenService>(c => new JwtTokenService(Configuration.GetValue<string>("RsaKeysPath:Private")));
 
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IProjectQuery, ProjectQuery>();
+
             services.AddSingleton(AutoMapperConfig.Configure());
 
+            services.AddTransient<IDatabaseConnector, DatabaseConnector>(c => new DatabaseConnector(Configuration.GetConnectionString("Db")));
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Db")));
         }
 

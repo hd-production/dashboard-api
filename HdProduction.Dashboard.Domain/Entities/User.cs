@@ -11,7 +11,7 @@ namespace HdProduction.Dashboard.Domain.Entities
       Email = email;
       SaltedPwd = saltedPwd;
       PwdSalt = pwdSalt;
-      //ProjectRights = ProjectRights ?? new List<UserProjectRights>();
+      ProjectRights = ProjectRights ?? new List<UserProjectRights>();
     }
 
     public void SetRefreshToken(string refreshToken)
@@ -27,6 +27,6 @@ namespace HdProduction.Dashboard.Domain.Entities
     public string SaltedPwd { get; }
     public string PwdSalt { get; }
     public string RefreshToken { get; private set; }
-    public ICollection<UserProjectRights> ProjectRights { get; }
+    public ICollection<UserProjectRights> ProjectRights { get; } // ef
   }
 }

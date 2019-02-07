@@ -9,7 +9,7 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
 
     public void Configure(EntityTypeBuilder<UserProjectRights> builder)
     {
-      builder.ToTable("user_project");
+      builder.ToTable(UserProjectRightsMetadata.Table);
 
       builder.HasKey(up => new {up.UserId, up.ProjectId});
 

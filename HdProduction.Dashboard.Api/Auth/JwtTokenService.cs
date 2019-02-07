@@ -30,7 +30,7 @@ namespace HdProduction.Dashboard.Api.Auth
         }),
         Expires = DateTime.UtcNow.AddMinutes(30),
         Issuer = JwtDefaults.Issuer,
-        SigningCredentials = new SigningCredentials(_privateSecret, SecurityAlgorithms.RsaSha256)
+        SigningCredentials = new SigningCredentials(_privateSecret, SecurityAlgorithms.RsaSha256Signature)
       };
       var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
