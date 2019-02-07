@@ -16,13 +16,15 @@ namespace HdProduction.Dashboard.Api.Controllers
   [Route("v{version:apiVersion}/projects"), Authorize]
   public class ProjectsController : ControllerBase
   {
+    private readonly IAppBuildQuery _appBuildQuery;
     private readonly IProjectQuery _query;
     private readonly IMediator _mediator;
 
-    public ProjectsController(IProjectQuery query, IMediator mediator)
+    public ProjectsController(IProjectQuery query, IMediator mediator, IAppBuildQuery appBuildQuery)
     {
       _query = query;
       _mediator = mediator;
+      _appBuildQuery = appBuildQuery;
     }
 
     [HttpGet("")]
@@ -55,6 +57,12 @@ namespace HdProduction.Dashboard.Api.Controllers
     public Task Delete(long projectId)
     {
       return _mediator.Send(new DeleteProjectCmd(projectId, User.GetId()));
+    }
+
+    [HttpGet("buildApp")]
+    public Task DownloadAppBuild()
+    {
+      return _appBuildQuery.DownloadArchiveAsync();
     }
   }
 }

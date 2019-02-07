@@ -1,6 +1,6 @@
 using Npgsql;
 
-namespace HdProduction.Dashboard.Application.NpgsqlOrm
+namespace HdProduction.Dashboard.Infrastructure.NpgsqlOrm
 {
   public interface IDatabaseConnector
   {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Application.Models;
-using HdProduction.Dashboard.Application.NpgsqlOrm;
 using HdProduction.Dashboard.Domain.Entities;
 using HdProduction.Dashboard.Domain.Exceptions;
+using HdProduction.Dashboard.Infrastructure.NpgsqlOrm;
 
 namespace HdProduction.Dashboard.Application.Queries.Projects
 {

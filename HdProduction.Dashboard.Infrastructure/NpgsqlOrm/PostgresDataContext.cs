@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace HdProduction.Dashboard.Application.NpgsqlOrm
+namespace HdProduction.Dashboard.Infrastructure.NpgsqlOrm
 {
   public class PostgresDataContext : IDisposable
   {

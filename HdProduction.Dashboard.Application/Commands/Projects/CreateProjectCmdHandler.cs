@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Contracts;
 using HdProduction.Dashboard.Domain.Entities;
 using HdProduction.Dashboard.Infrastructure;
-using HdProduction.Dashboard.Infrastructure.Extensions;
 using MediatR;
 
 namespace HdProduction.Dashboard.Application.Commands.Projects
@@ -27,12 +26,10 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
         _projectRepository.Add(project);
         await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        await transaction.ExecuteSafeAsync(async () =>
-        {
-          _projectRepository.Add(new UserProjectRights(request.UserId, project.Id, ProjectRight.Creator));
-          await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-        });
+        _projectRepository.Add(new UserProjectRights(request.UserId, project.Id, ProjectRight.Creator));
+        await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
+        transaction.Commit();
         return project.Id;
       }
     }

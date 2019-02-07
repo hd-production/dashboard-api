@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NpgsqlTypes;
 
-namespace HdProduction.Dashboard.Application.NpgsqlOrm
+namespace HdProduction.Dashboard.Infrastructure.NpgsqlOrm
 {
   public static class TypeMappings
   {
@@ -11,7 +11,7 @@ namespace HdProduction.Dashboard.Application.NpgsqlOrm
       return Mapping[typeof(T)];
     }
 
-    public static readonly Dictionary<Type, NpgsqlDbType> Mapping = new Dictionary<Type, NpgsqlDbType>
+    internal static readonly Dictionary<Type, NpgsqlDbType> Mapping = new Dictionary<Type, NpgsqlDbType>
     {
       {typeof(byte[]), NpgsqlDbType.Bytea},
       {typeof(bool), NpgsqlDbType.Boolean},

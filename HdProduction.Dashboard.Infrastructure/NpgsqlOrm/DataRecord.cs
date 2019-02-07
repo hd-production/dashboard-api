@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Npgsql;
 
-namespace HdProduction.Dashboard.Application.NpgsqlOrm
+namespace HdProduction.Dashboard.Infrastructure.NpgsqlOrm
 {
   public class DataRecord
   {

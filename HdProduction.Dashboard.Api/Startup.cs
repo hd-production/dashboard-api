@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
-using HdProduction.Dashboard.Application.NpgsqlOrm;
 using HdProduction.Dashboard.Application.Queries.Projects;
 using HdProduction.Dashboard.Application.Queries.Users;
+using HdProduction.Dashboard.Application.Services;
 using HdProduction.Dashboard.Domain.Contracts;
 using HdProduction.Dashboard.Domain.Entities;
 using HdProduction.Dashboard.Infrastructure;
+using HdProduction.Dashboard.Infrastructure.NpgsqlOrm;
 using HdProduction.Dashboard.Infrastructure.Repositories;
 using log4net;
 using MediatR;
@@ -58,6 +59,10 @@ namespace HdProduction.Dashboard.Api
 
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectQuery, ProjectQuery>();
+
+            services.AddScoped<IAppBuildQuery, AppBuildQuery>();
+            services.AddScoped<IHelpdeskBuildService, HelpdeskBuildService>(c =>
+                new HelpdeskBuildService(Configuration.GetValue<string>("HelpdeskHostSources:Path")));
 
             services.AddSingleton(AutoMapperConfig.Configure());
 
