@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Projects;
+using HdProduction.Dashboard.Domain.Entities.Relational;
 
 namespace HdProduction.Dashboard.Domain.Contracts
 {

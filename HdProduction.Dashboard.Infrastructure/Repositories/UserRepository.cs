@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Contracts;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace HdProduction.Dashboard.Infrastructure.Repositories

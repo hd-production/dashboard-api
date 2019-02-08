@@ -1,6 +1,6 @@
 using System;
 
-namespace HdProduction.Dashboard.Domain.Entities
+namespace HdProduction.Dashboard.Domain.Entities.Projects
 {
   [Flags]
   public enum SelfHostBuildConfiguration

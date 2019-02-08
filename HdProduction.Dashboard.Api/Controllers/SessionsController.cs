@@ -1,12 +1,11 @@
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Api.Extensions;
 using HdProduction.Dashboard.Api.Models;
+using HdProduction.Dashboard.Api.Models.Sessions;
 using HdProduction.Dashboard.Application.Commands.Users;
-using HdProduction.Dashboard.Domain.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace HdProduction.Dashboard.Api.Controllers
 {

@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Contracts;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Projects;
+using HdProduction.Dashboard.Domain.Entities.Relational;
 using HdProduction.Dashboard.Infrastructure;
 using MediatR;
 
@@ -22,7 +23,7 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
     {
       using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
       {
-        var project = new Project(request.Name);
+        var project = new Project(request.Name, request.SelfHostSettings);
         _projectRepository.Add(project);
         await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 

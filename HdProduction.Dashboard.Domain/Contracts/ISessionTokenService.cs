@@ -1,5 +1,4 @@
-using HdProduction.Dashboard.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
+using HdProduction.Dashboard.Domain.Entities.Users;
 
 namespace HdProduction.Dashboard.Domain.Contracts
 {

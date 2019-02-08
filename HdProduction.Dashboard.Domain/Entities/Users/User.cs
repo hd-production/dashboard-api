@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using HdProduction.Dashboard.Domain.Entities.Relational;
 using HdProduction.Dashboard.Domain.Services;
 
-namespace HdProduction.Dashboard.Domain.Entities
+namespace HdProduction.Dashboard.Domain.Entities.Users
 {
   public class User : EntityBase<long>
   {

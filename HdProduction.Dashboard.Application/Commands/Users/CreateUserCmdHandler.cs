@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Contracts;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Users;
 using HdProduction.Dashboard.Domain.Services;
 using MediatR;
 

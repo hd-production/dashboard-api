@@ -1,4 +1,4 @@
-namespace HdProduction.Dashboard.Api.Models
+namespace HdProduction.Dashboard.Api.Models.Users
 {
   public class UserSignUpRequestModel
   {

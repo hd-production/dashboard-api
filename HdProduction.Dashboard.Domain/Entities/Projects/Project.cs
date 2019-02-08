@@ -1,16 +1,21 @@
 using System.Collections.Generic;
+using HdProduction.Dashboard.Domain.Entities.Relational;
 
-namespace HdProduction.Dashboard.Domain.Entities
+namespace HdProduction.Dashboard.Domain.Entities.Projects
 {
   public class Project : EntityBase<long>
   {
-    public Project(string name)
+    public Project(string name, SelfHostSettings selfHostSettings)
     {
       Name = name;
+      SelfHostSettings = selfHostSettings;
       UserRights = UserRights ?? new List<UserProjectRights>();
     }
 
     public string Name { get; private set; }
+    
+    public SelfHostSettings SelfHostSettings { get; }
+    
     public ICollection<UserProjectRights> UserRights { get; } // ef
 
     public void Update(string name)
@@ -24,5 +29,6 @@ namespace HdProduction.Dashboard.Domain.Entities
     public static readonly string Table = "project";
     public static readonly string Id = InQuotes(nameof(Project.Id));
     public static readonly string Name = InQuotes(nameof(Project.Name));
+    public static readonly string SelfHostSettings = InQuotes(nameof(Project.SelfHostSettings));
   }
 }

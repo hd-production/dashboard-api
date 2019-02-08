@@ -1,4 +1,4 @@
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Relational;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

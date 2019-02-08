@@ -1,4 +1,4 @@
-﻿using HdProduction.Dashboard.Domain.Entities;
+﻿using HdProduction.Dashboard.Domain.Entities.Projects;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HdProduction.Dashboard.Api.Auth

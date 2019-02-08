@@ -1,4 +1,4 @@
-namespace HdProduction.Dashboard.Domain.Entities
+namespace HdProduction.Dashboard.Domain.Entities.Projects
 {
   public enum ProjectRight
   {

@@ -1,4 +1,5 @@
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Projects;
+using HdProduction.Dashboard.Infrastructure.EfConfigurations.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,6 +14,11 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
       builder.Property(p => p.Name)
         .IsRequired()
         .HasMaxLength(128);
+
+      builder.Property(p => p.SelfHostSettings)
+        .IsRequired(false)
+        .HasConversion(new JsonValueConverter<SelfHostSettings>())
+        .HasColumnType("Json");
 
       base.ConfigureNext(builder);
     }

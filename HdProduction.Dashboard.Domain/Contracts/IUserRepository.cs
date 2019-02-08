@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Users;
 
 namespace HdProduction.Dashboard.Domain.Contracts
 {

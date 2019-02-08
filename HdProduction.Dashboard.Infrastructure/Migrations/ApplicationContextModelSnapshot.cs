@@ -18,7 +18,7 @@ namespace HdProduction.Dashboard.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.Project", b =>
+            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.Projects.Project", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
@@ -27,37 +27,15 @@ namespace HdProduction.Dashboard.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(128);
 
+                    b.Property<string>("SelfHostSettings")
+                        .HasColumnType("Json");
+
                     b.HasKey("Id");
 
                     b.ToTable("project");
                 });
 
-            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.User", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(254);
-
-                    b.Property<string>("PwdSalt")
-                        .IsFixedLength(true)
-                        .HasMaxLength(32);
-
-                    b.Property<string>("RefreshToken")
-                        .IsFixedLength(true)
-                        .HasMaxLength(32);
-
-                    b.Property<string>("SaltedPwd")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("user");
-                });
-
-            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.UserProjectRights", b =>
+            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.Relational.UserProjectRights", b =>
                 {
                     b.Property<long>("UserId");
 
@@ -72,14 +50,39 @@ namespace HdProduction.Dashboard.Infrastructure.Migrations
                     b.ToTable("user_project");
                 });
 
-            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.UserProjectRights", b =>
+            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.Users.User", b =>
                 {
-                    b.HasOne("HdProduction.Dashboard.Domain.Entities.Project", "Project")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254);
+
+                    b.Property<string>("PwdSalt")
+                        .IsFixedLength(true)
+                        .HasMaxLength(32);
+
+                    b.Property<string>("RefreshToken")
+                        .IsFixedLength(true)
+                        .HasMaxLength(44);
+
+                    b.Property<string>("SaltedPwd")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("user");
+                });
+
+            modelBuilder.Entity("HdProduction.Dashboard.Domain.Entities.Relational.UserProjectRights", b =>
+                {
+                    b.HasOne("HdProduction.Dashboard.Domain.Entities.Projects.Project", "Project")
                         .WithMany("UserRights")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("HdProduction.Dashboard.Domain.Entities.User", "User")
+                    b.HasOne("HdProduction.Dashboard.Domain.Entities.Users.User", "User")
                         .WithMany("ProjectRights")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

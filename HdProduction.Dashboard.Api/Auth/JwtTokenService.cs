@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Security.Claims;
 using HdProduction.Dashboard.Domain.Contracts;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Users;
 using Microsoft.IdentityModel.Tokens;
 
 namespace HdProduction.Dashboard.Api.Auth

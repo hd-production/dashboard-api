@@ -1,4 +1,7 @@
-namespace HdProduction.Dashboard.Domain.Entities
+using HdProduction.Dashboard.Domain.Entities.Projects;
+using HdProduction.Dashboard.Domain.Entities.Users;
+
+namespace HdProduction.Dashboard.Domain.Entities.Relational
 {
   public class UserProjectRights
   {

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Application.Models;
-using HdProduction.Dashboard.Domain.Entities;
+using HdProduction.Dashboard.Domain.Entities.Projects;
+using HdProduction.Dashboard.Domain.Entities.Relational;
 using HdProduction.Dashboard.Domain.Exceptions;
 using HdProduction.Dashboard.Infrastructure.NpgsqlOrm;
 
@@ -31,8 +32,9 @@ namespace HdProduction.Dashboard.Application.Queries.Projects
           .Set("Id", id)
           .ReadOrDefaultAsync(r => new ProjectReadModel
           {
-            Id = r.Get<long>("Id"),
-            Name = r.Get<string>("Name")
+            Id = r.Get<long>(nameof(Project.Id)),
+            Name = r.Get<string>(nameof(Project.Name)),
+            SelfHostSettings = r.Get<string>(nameof(Project.SelfHostSettings))
           })
           ?? throw  new EntityNotFoundException("Project not found");
       }
@@ -49,8 +51,8 @@ namespace HdProduction.Dashboard.Application.Queries.Projects
           .Set("UserId", userId)
           .ReadAllAsync(r => new ProjectGridReadModel
           {
-            Id = r.Get<long>("Id"),
-            Name = r.Get<string>("Name")
+            Id = r.Get<long>(nameof(Project.Id)),
+            Name = r.Get<string>(nameof(Project.Name))
           });
       }
     }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Api.Models;
+using HdProduction.Dashboard.Api.Models.Users;
 using HdProduction.Dashboard.Application.Commands.Users;
 using HdProduction.Dashboard.Application.Models;
 using HdProduction.Dashboard.Application.Queries.Users;
