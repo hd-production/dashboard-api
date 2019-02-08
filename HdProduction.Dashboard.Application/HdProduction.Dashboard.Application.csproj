@@ -46,7 +46,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services" />
+      <Folder Include="Validations" />
     </ItemGroup>
 
 </Project>
