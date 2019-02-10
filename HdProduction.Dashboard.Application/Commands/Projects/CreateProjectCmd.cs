@@ -3,17 +3,11 @@ using MediatR;
 
 namespace HdProduction.Dashboard.Application.Commands.Projects
 {
-  public class CreateProjectCmd : IRequest<long>
+  public class CreateProjectCmd : BaseProjectCmd, IRequest<long>
   {
-    public CreateProjectCmd(string name, SelfHostSettings selfHostSettings, int userId)
+    public CreateProjectCmd(string name, SelfHostSettings selfHostSettings, long userId)
+    : base(name, selfHostSettings, userId)
     {
-      Name = name;
-      UserId = userId;
-      SelfHostSettings = selfHostSettings;
     }
-
-    public string Name { get; }
-    public SelfHostSettings SelfHostSettings { get; }
-    public int UserId { get; }
   }
 }

@@ -8,19 +8,24 @@ using MediatR.Pipeline;
 
 namespace HdProduction.Dashboard.Infrastructure.Validation
 {
-  public abstract class Validator<T> : IRequestPreProcessor<T> where T : IRequest
+  public interface IValidator
+  {
+    Task CheckAsync<T>(T model, CancellationToken cancellationToken);
+  }
+  
+  public abstract class Validator<T> : IValidator where T : class
   {
     private readonly List<IValidationRule> _validations;
-    private T _request;
+    private T _model;
 
     protected Validator()
     {
       _validations = new List<IValidationRule>();
     }
 
-    public async Task Process(T request, CancellationToken cancellationToken)
+    public virtual async Task CheckAsync(T model, CancellationToken cancellationToken)
     {
-      _request = request;
+      _model = model;
       await SetValidations();
       await Task.WhenAll(_validations.Select(v => v.CheckAsync(cancellationToken)).ToArray());
     }
@@ -29,9 +34,20 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
 
     protected ValidationRule<T, TProperty> RuleFor<TProperty>(Func<T, TProperty> expression)
     {
-      var rule = new ValidationRule<T, TProperty>(expression(_request), _request);
+      var rule = new ValidationRule<T, TProperty>(expression(_model), _model);
       _validations.Add(rule);
       return rule;
+    }
+
+    Task IValidator.CheckAsync<T1>(T1 model, CancellationToken cancellationToken)
+    {
+      var tModel = model as T;
+      if (tModel == null)
+      {
+        throw new ArgumentException("Wrong type of model");
+      }
+
+      return CheckAsync(tModel, cancellationToken);
     }
   }
 }

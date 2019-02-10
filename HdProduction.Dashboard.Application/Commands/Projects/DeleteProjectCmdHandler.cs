@@ -17,11 +17,7 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
 
     public async Task<Unit> Handle(DeleteProjectCmd request, CancellationToken cancellationToken)
     {
-      var project = await _repository.FindAsync(request.Id);
-      if (project == null)
-      {
-        throw new EntityNotFoundException("Project not found");
-      }
+      var project = await _repository.FindAsync(request.Id) ?? throw new EntityNotFoundException("Project not found");;
       _repository.Remove(project);
       await _repository.UnitOfWork.SaveChangesAsync(cancellationToken);
       return Unit.Value;

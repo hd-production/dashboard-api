@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HdProduction.Dashboard.Infrastructure.Validation
 {
@@ -17,9 +19,11 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
     private readonly TProperty _property;
     private readonly List<Func<TProperty, Task<bool>>> _simpleChecks;
     private readonly List<Func<TProperty, T, Task<bool>>> _compositeChecks;
-
+    
+    private IValidator _childValidator;
     private bool _haveToCheck;
     private string _message;
+    private bool _throwsNotFound;
 
     public ValidationRule(TProperty property, T request)
     {
@@ -67,6 +71,18 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
       return this;
     }
 
+    public ValidationRule<T, TProperty> ThrowsNotFound()
+    {
+      _throwsNotFound = true;
+      return this;
+    }
+
+    public ValidationRule<T, TProperty> SetModelValidator(IValidator validator)
+    {
+      _childValidator = validator;
+      return this;
+    }
+    
     public async Task CheckAsync(CancellationToken cancellationToken)
     {
       if (!_haveToCheck)
@@ -93,8 +109,90 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
 
       if (!isValid)
       {
-        throw new BusinessLogicException(_message);
+        if (_throwsNotFound)
+        {
+          throw new EntityNotFoundException(_message);
+        }
+        throw new ValidationException(_message);
+      }
+
+      if (_childValidator != null)
+      {
+        await _childValidator.CheckAsync(_property, cancellationToken);
       }
     }
+
+    #region Basic must
+
+    public ValidationRule<T, TProperty> Equal(TProperty val)
+    {
+      Must(p => p.Equals(val));
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> NotEqual(TProperty val)
+    {
+      Must(p => !p.Equals(val));
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> GreaterThan(TProperty val)
+    {
+      Must(p => p is IComparable comparable && comparable.CompareTo(val) > 0);
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> LessThan(TProperty val)
+    {
+      Must(p => p is IComparable comparable && comparable.CompareTo(val) < 0);
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> GreaterOrEqual(TProperty val)
+    {
+      Must(p => p is IComparable comparable && comparable.CompareTo(val) >= 0);
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> LessOrEqual(TProperty val)
+    {
+      Must(p => p is IComparable comparable && comparable.CompareTo(val) <= 0);
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> Null()
+    {
+      Must(p => p == null);
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> NotNull()
+    {
+      Must(p => p != null);
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> Empty()
+    {
+      Must(p => p == null || p.Equals(default)
+                || p is string str && string.IsNullOrWhiteSpace(str)
+                || p is IEnumerable enumerable && enumerable.Any());
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> NotEmpty()
+    {
+      Must(p => p != null && !p.Equals(default)
+        && (p is string str && string.IsNullOrWhiteSpace(str) || p is IEnumerable enumerable && enumerable.Any()));
+      return this;
+    }
+    
+    public ValidationRule<T, TProperty> ValidEnum()
+    {
+      Must(p => Enum.IsDefined(typeof(TProperty), p));
+      return this;
+    }
+
+    #endregion
   }
 }
