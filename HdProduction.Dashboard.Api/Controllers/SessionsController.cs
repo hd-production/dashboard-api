@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Api.Extensions;
-using HdProduction.Dashboard.Api.Models;
 using HdProduction.Dashboard.Api.Models.Sessions;
 using HdProduction.Dashboard.Application.Commands.Users;
 using MediatR;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HdProduction.Dashboard.Api.Controllers
 {
   [ApiController, ApiVersion("0")]
-  [Route("v{version:apiVersion}/sessions")]
+  [Route("v{version:apiVersion}/sessions"), Authorize]
   public class SessionsController : ControllerBase
   {
     private readonly IMediator _mediator;
@@ -20,7 +19,7 @@ namespace HdProduction.Dashboard.Api.Controllers
       _mediator = mediator;
     }
 
-    [HttpPost("")]
+    [HttpPost(""), AllowAnonymous]
     public async Task<SessionResponseModel> Authenticate([FromBody] AuthenticateRequestModel requestModel)
     {
       var (token, refreshToken) = await _mediator.Send(new AuthenticateCmd(requestModel.Email, requestModel.PwdHash));
@@ -31,7 +30,7 @@ namespace HdProduction.Dashboard.Api.Controllers
       };
     }
 
-    [HttpPut("refresh"), Authorize]
+    [HttpPut("refresh")]
     public async Task<SessionResponseModel> Refresh([FromBody] RefreshSessionRequestModel requestModel)
     {
       var (token, refreshToken) = await _mediator.Send(new RefreshSessionCmd(requestModel.RefreshToken, User.GetId()));
@@ -42,7 +41,7 @@ namespace HdProduction.Dashboard.Api.Controllers
       };
     }
 
-    [HttpDelete(""), Authorize]
+    [HttpDelete("")]
     public Task SignOut()
     {
       return _mediator.Send(new SignOutCmd(User.GetId()));
