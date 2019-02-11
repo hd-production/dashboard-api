@@ -24,7 +24,13 @@ namespace HdProduction.Dashboard.Application.Validations.Users
 
             RuleFor(u => u.Email).Must(async e => await _repository.FindByEmailAsync(e) == null)
                 .WithMessage("User with same email already exists");
-            
+
+            RuleFor(u => u.FirstName).NotEmpty()
+                .WithMessage("First name can't be empty");
+
+            RuleFor(u => u.LastName).NotEmpty()
+                .WithMessage("Last name can't be empty");
+
             return Task.CompletedTask;
         }
 

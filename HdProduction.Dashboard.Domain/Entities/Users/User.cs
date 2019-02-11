@@ -7,11 +7,13 @@ namespace HdProduction.Dashboard.Domain.Entities.Users
 {
   public class User : EntityBase<long>
   {
-    public User(string email, string saltedPwd, string pwdSalt)
+    public User(string email, string firstName, string lastName, string saltedPwd, string pwdSalt)
     {
       Email = email;
       SaltedPwd = saltedPwd;
       PwdSalt = pwdSalt;
+      FirstName = firstName;
+      LastName = lastName;
       ProjectRights = ProjectRights ?? new List<UserProjectRights>();
     }
 
@@ -25,6 +27,8 @@ namespace HdProduction.Dashboard.Domain.Entities.Users
     }
 
     public string Email { get; }
+    public string FirstName { get; }
+    public string LastName { get; }
     public string SaltedPwd { get; }
     public string PwdSalt { get; }
     public string RefreshToken { get; private set; }

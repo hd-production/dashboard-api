@@ -19,7 +19,7 @@ namespace HdProduction.Dashboard.Application.Commands.Users
     public async Task<long> Handle(CreateUserCmd request, CancellationToken cancellationToken)
     {
       var pwdHelper = SecurityHelper.Create();
-      var user = new User(request.Email, pwdHelper.CreateSaltedPassword(request.PasswordHash), pwdHelper.Salt);
+      var user = new User(request.Email, request.FirstName, request.LastName, pwdHelper.CreateSaltedPassword(request.PasswordHash), pwdHelper.Salt);
       _userRepository.Add(user);
 
       await _userRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

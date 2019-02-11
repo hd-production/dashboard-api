@@ -19,7 +19,7 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
     private readonly TProperty _property;
     private readonly List<Func<TProperty, Task<bool>>> _simpleChecks;
     private readonly List<Func<TProperty, T, Task<bool>>> _compositeChecks;
-    
+
     private IValidator _childValidator;
     private bool _haveToCheck;
     private string _message;
@@ -124,74 +124,36 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
 
     #region Basic must
 
-    public ValidationRule<T, TProperty> Equal(TProperty val)
-    {
-      Must(p => p.Equals(val));
-      return this;
-    }
+    public ValidationRule<T, TProperty> Equal(TProperty val) => Must(p => p.Equals(val));
     
-    public ValidationRule<T, TProperty> NotEqual(TProperty val)
-    {
-      Must(p => !p.Equals(val));
-      return this;
-    }
+    public ValidationRule<T, TProperty> NotEqual(TProperty val) => Must(p => !p.Equals(val));
     
-    public ValidationRule<T, TProperty> GreaterThan(TProperty val)
-    {
+    public ValidationRule<T, TProperty> GreaterThan(TProperty val) =>
       Must(p => p is IComparable comparable && comparable.CompareTo(val) > 0);
-      return this;
-    }
     
-    public ValidationRule<T, TProperty> LessThan(TProperty val)
-    {
+    public ValidationRule<T, TProperty> LessThan(TProperty val) =>
       Must(p => p is IComparable comparable && comparable.CompareTo(val) < 0);
-      return this;
-    }
     
-    public ValidationRule<T, TProperty> GreaterOrEqual(TProperty val)
-    {
+    public ValidationRule<T, TProperty> GreaterOrEqual(TProperty val) =>
       Must(p => p is IComparable comparable && comparable.CompareTo(val) >= 0);
-      return this;
-    }
     
-    public ValidationRule<T, TProperty> LessOrEqual(TProperty val)
-    {
+    public ValidationRule<T, TProperty> LessOrEqual(TProperty val) =>
       Must(p => p is IComparable comparable && comparable.CompareTo(val) <= 0);
-      return this;
-    }
     
-    public ValidationRule<T, TProperty> Null()
-    {
-      Must(p => p == null);
-      return this;
-    }
+    public ValidationRule<T, TProperty> Null() => Must(p => p == null);
+
+    public ValidationRule<T, TProperty> NotNull() => Must(p => p != null);
     
-    public ValidationRule<T, TProperty> NotNull()
-    {
-      Must(p => p != null);
-      return this;
-    }
-    
-    public ValidationRule<T, TProperty> Empty()
-    {
+    public ValidationRule<T, TProperty> Empty() =>
       Must(p => p == null || p.Equals(default)
-                || p is string str && string.IsNullOrWhiteSpace(str)
-                || p is IEnumerable enumerable && enumerable.Any());
-      return this;
-    }
-    
-    public ValidationRule<T, TProperty> NotEmpty()
-    {
+          || p is string str && string.IsNullOrWhiteSpace(str)
+          || p is IEnumerable enumerable && enumerable.Any());
+
+    public ValidationRule<T, TProperty> NotEmpty() =>
       Must(p => p != null && !p.Equals(default)
         && (p is string str && string.IsNullOrWhiteSpace(str) || p is IEnumerable enumerable && enumerable.Any()));
-      return this;
-    }
     
-    public ValidationRule<T, TProperty> ValidEnum()
-    {
-      Must(p => Enum.IsDefined(typeof(TProperty), p));
-      return this;
-    }
+    public ValidationRule<T, TProperty> ValidEnum() => Must(p => Enum.IsDefined(typeof(TProperty), p));
 
     #endregion
   }
