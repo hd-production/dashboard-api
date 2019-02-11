@@ -42,9 +42,6 @@ namespace HdProduction.Dashboard.Api.Controllers
     }
 
     [HttpDelete("")]
-    public Task SignOut()
-    {
-      return _mediator.Send(new SignOutCmd(User.GetId()));
-    }
+    public Task SignOut() => _mediator.Send(new SignOutCmd(User.GetId()));
   }
 }

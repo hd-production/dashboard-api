@@ -41,6 +41,8 @@ namespace HdProduction.Dashboard.Infrastructure.Services
           ?.WaitForExit();
 
         ZipFile.CreateFromDirectory(outputPath, zippedBuild);
+        Directory.Delete(outputPath, true);
+
         return zippedBuild;
       }
     }

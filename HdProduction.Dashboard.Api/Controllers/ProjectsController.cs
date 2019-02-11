@@ -33,16 +33,10 @@ namespace HdProduction.Dashboard.Api.Controllers
     }
 
     [HttpGet("")]
-    public Task<IReadOnlyCollection<ProjectGridReadModel>> Get()
-    {
-      return _query.GetAllAsync(User.GetId());
-    }
+    public Task<IReadOnlyCollection<ProjectGridReadModel>> Get() => _query.GetAllAsync(User.GetId());
 
     [HttpGet("{projectId}"), Authorize(Policy = Policy.ProjectAdminAccess)]
-    public Task<ProjectReadModel> Get(long projectId)
-    {
-      return _query.GetAsync(projectId);
-    }
+    public Task<ProjectReadModel> Get(long projectId) => _query.GetAsync(projectId);
 
     [HttpPost("")]
     public async Task<ProjectReadModel> Create([FromBody] ProjectCreateRequestModel requestModel)

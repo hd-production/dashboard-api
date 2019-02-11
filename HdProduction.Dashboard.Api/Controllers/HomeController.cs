@@ -6,9 +6,6 @@ namespace HdProduction.Dashboard.Api.Controllers
   public class HomeController
   {
     [HttpGet("")]
-    public string Index()
-    {
-      return "HdProduction.Dashboard.Api is running";
-    }
+    public string Index() => "HdProduction.Dashboard.Api is running";
   }
 }

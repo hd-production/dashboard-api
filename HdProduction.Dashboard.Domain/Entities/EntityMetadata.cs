@@ -5,10 +5,7 @@ namespace HdProduction.Dashboard.Domain.Entities
 {
   public abstract class EntityMetadata<T>
   {
-    protected static string InQuotes(string str)
-    {
-      return $"\"{str}\"";
-    }
+    protected static string InQuotes(string str) => $"\"{str}\"";
 
     public static string[] All =>
       typeof(T)

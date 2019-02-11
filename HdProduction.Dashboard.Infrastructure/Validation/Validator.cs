@@ -10,7 +10,7 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
   {
     Task CheckAsync<T>(T model, CancellationToken cancellationToken);
   }
-  
+
   public abstract class Validator<T> : IValidator where T : class
   {
     private readonly List<IValidationRule> _validations;
@@ -39,8 +39,7 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
 
     Task IValidator.CheckAsync<T1>(T1 model, CancellationToken cancellationToken)
     {
-      var tModel = model as T;
-      if (tModel == null)
+      if (!(model is T tModel))
       {
         throw new ArgumentException("Wrong type of model");
       }
