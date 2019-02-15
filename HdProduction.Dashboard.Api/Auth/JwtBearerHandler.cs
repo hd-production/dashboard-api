@@ -42,7 +42,8 @@ namespace HdProduction.Dashboard.Api.Auth
           ValidateIssuerSigningKey = true,
           ValidIssuer = Options.ClaimsIssuer,
           ValidateAudience = false,
-          IssuerSigningKey = new JsonWebKey(await stream.ReadToEndAsync())
+          ValidateLifetime = !Options.IgnoreExpiration,
+          IssuerSigningKey = new JsonWebKey(await stream.ReadToEndAsync()),
         };
       }
     }

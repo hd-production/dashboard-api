@@ -12,9 +12,10 @@ namespace HdProduction.Dashboard.Infrastructure
   {
     public ApplicationContext CreateDbContext(string[] args)
     {
+      var env = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
       IConfigurationRoot configuration = new ConfigurationBuilder()
         .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/HdProduction.Dashboard.Api")
-        .AddJsonFile("appsettings.json")
+        .AddJsonFile($"appsettings.{env}.json")
         .Build();
 
       var msb = new NpgsqlConnectionStringBuilder(configuration.GetConnectionString("Db"))

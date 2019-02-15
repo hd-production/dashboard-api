@@ -1,3 +1,4 @@
+using System;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace HdProduction.Dashboard.Application.Validations.Users
 
         protected override Task SetValidations()
         {
-            RuleFor(u => u.Email).NotEmpty().Must(IsValidEmail)
+            RuleFor(u => u.Email).NotEmpty().Must((Func<string, bool>) IsValidEmail)
                 .WithMessage("Email has invalid format");
             RuleFor(u => u.Email.Length).LessOrEqual(254)
                 .WithMessage("Email is too long");
@@ -44,7 +45,7 @@ namespace HdProduction.Dashboard.Application.Validations.Users
             return CheckAsync(request, cancellationToken);
         }
 
-        private bool IsValidEmail(string email)
+        private static bool IsValidEmail(string email)
         {
             try
             {

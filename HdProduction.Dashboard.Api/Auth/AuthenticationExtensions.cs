@@ -16,6 +16,12 @@ namespace HdProduction.Dashboard.Api.Auth
         {
           opts.ClaimsIssuer = JwtDefaults.Issuer;
           opts.PublicKeyPath = publicKeyPath;
+        })
+        .AddScheme<JwtOptions, JwtAuthBearerHandler>(JwtDefaults.AuthenticationSchemeIgnoreExpiration, null, opts =>
+        {
+          opts.ClaimsIssuer = JwtDefaults.Issuer;
+          opts.PublicKeyPath = publicKeyPath;
+          opts.IgnoreExpiration = true;
         });
     }
   }
