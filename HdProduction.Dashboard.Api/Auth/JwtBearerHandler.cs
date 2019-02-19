@@ -22,9 +22,9 @@ namespace HdProduction.Dashboard.Api.Auth
       {
         new Claim(JwtRegisteredClaimNames.Email, "DebugUser"),
         new Claim(JwtRegisteredClaimNames.Sub, "-1")
-      }, JwtDefaults.AuthenticationScheme, ClaimTypes.Email, JwtDefaults.ClaimsRoleType))
-    {
-    };
+      }, JwtDefaults.AuthenticationScheme, ClaimTypes.Email, JwtDefaults.ClaimsRoleType));
+
+    private static JsonWebKey _signInKey;
 
     private TokenValidationParameters _validationParameters;
 
@@ -35,17 +35,22 @@ namespace HdProduction.Dashboard.Api.Auth
 
     protected override async Task InitializeHandlerAsync()
     {
-      using (var stream = File.OpenText(Options.PublicKeyPath))
+      if (_signInKey == null)
       {
-        _validationParameters = new TokenValidationParameters
+        using (var stream = File.OpenText(Options.PublicKeyPath))
         {
-          ValidateIssuerSigningKey = true,
-          ValidIssuer = Options.ClaimsIssuer,
-          ValidateAudience = false,
-          ValidateLifetime = !Options.IgnoreExpiration,
-          IssuerSigningKey = new JsonWebKey(await stream.ReadToEndAsync()),
-        };
+          _signInKey = new JsonWebKey(await stream.ReadToEndAsync());
+        }
       }
+
+      _validationParameters = new TokenValidationParameters
+      {
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = Options.ClaimsIssuer,
+        ValidateAudience = false,
+        ValidateLifetime = !Options.IgnoreExpiration,
+        IssuerSigningKey = _signInKey,
+      };
     }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()

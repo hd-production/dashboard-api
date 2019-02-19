@@ -19,11 +19,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="HdProduction.Npgsql.Orm" Version="0.1.0" />
       <PackageReference Include="MediatR" Version="6.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />
+      <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="NpgsqlOrm" />
     </ItemGroup>
 
 </Project>

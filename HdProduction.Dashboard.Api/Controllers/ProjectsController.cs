@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Extensions;
-using HdProduction.Dashboard.Api.Models;
 using HdProduction.Dashboard.Api.Models.Projects;
 using HdProduction.Dashboard.Application.Commands.Projects;
+using HdProduction.Dashboard.Application.Events;
+using HdProduction.Dashboard.Application.Events.MessageQueue;
 using HdProduction.Dashboard.Application.Models;
 using HdProduction.Dashboard.Application.Queries.Projects;
 using HdProduction.Dashboard.Domain.Entities.Projects;
@@ -63,6 +64,7 @@ namespace HdProduction.Dashboard.Api.Controllers
     [HttpGet("{projectId}/app_build")]
     public async Task<FileStreamResult> DownloadAppBuild(long projectId)
     {
+      await _mediator.Publish(new MqEventNotification(new TestEvent()));
       var (stream, name) = await _appBuildQuery.DownloadArchiveAsync(projectId);
       return File(stream, "application/zip", name);
     }

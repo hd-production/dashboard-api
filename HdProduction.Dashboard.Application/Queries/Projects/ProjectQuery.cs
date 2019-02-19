@@ -5,7 +5,7 @@ using HdProduction.Dashboard.Domain.Entities.Projects;
 using HdProduction.Dashboard.Domain.Entities.Relational;
 using HdProduction.Dashboard.Domain.Exceptions;
 using HdProduction.Dashboard.Infrastructure.Extensions;
-using HdProduction.Dashboard.Infrastructure.NpgsqlOrm;
+using HdProduction.Npgsql.Orm;
 
 namespace HdProduction.Dashboard.Application.Queries.Projects
 {
