@@ -151,8 +151,9 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
 
     public ValidationRule<T, TProperty> NotEmpty() =>
       Must(p => p != null && !p.Equals(default)
-        && (p is string str && string.IsNullOrWhiteSpace(str) || p is IEnumerable enumerable && enumerable.Any()));
-    
+        && (!(p is string str) || !string.IsNullOrWhiteSpace(str))
+        && (!(p is IEnumerable enumerable) || enumerable.Any()));
+
     public ValidationRule<T, TProperty> ValidEnum() => Must(p => Enum.IsDefined(typeof(TProperty), p));
 
     #endregion
