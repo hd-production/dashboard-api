@@ -1,4 +1,4 @@
-using HdProduction.Dashboard.Infrastructure.RabbitMq;
+using HdProduction.MessageQueue.RabbitMq.Events;
 
 namespace HdProduction.Dashboard.Application.Events
 {

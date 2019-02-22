@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Contracts;
-using HdProduction.Dashboard.Domain.Exceptions;
 using MediatR;
 
 namespace HdProduction.Dashboard.Application.Commands.Projects

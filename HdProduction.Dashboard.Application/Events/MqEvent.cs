@@ -1,7 +1,7 @@
-using HdProduction.Dashboard.Infrastructure.RabbitMq;
+using HdProduction.MessageQueue.RabbitMq.Events;
 using MediatR;
 
-namespace HdProduction.Dashboard.Application.Events.MessageQueue
+namespace HdProduction.Dashboard.Application.Events
 {
   public class MqEventNotification : INotification
   {

@@ -6,7 +6,6 @@ using HdProduction.Dashboard.Api.Extensions;
 using HdProduction.Dashboard.Api.Models.Projects;
 using HdProduction.Dashboard.Application.Commands.Projects;
 using HdProduction.Dashboard.Application.Events;
-using HdProduction.Dashboard.Application.Events.MessageQueue;
 using HdProduction.Dashboard.Application.Models;
 using HdProduction.Dashboard.Application.Queries.Projects;
 using HdProduction.Dashboard.Domain.Entities.Projects;

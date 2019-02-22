@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="NpgsqlOrm" />
+      <Folder Include="RabbitMq" />
     </ItemGroup>
 
 </Project>

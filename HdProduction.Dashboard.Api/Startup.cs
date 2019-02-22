@@ -1,6 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
+using HdProduction.Dashboard.Application.Events;
 using HdProduction.Dashboard.Application.Queries.Projects;
 using HdProduction.Dashboard.Application.Queries.Users;
 using HdProduction.Dashboard.Domain.Contracts;
@@ -8,6 +11,7 @@ using HdProduction.Dashboard.Domain.Entities.Projects;
 using HdProduction.Dashboard.Infrastructure;
 using HdProduction.Dashboard.Infrastructure.Repositories;
 using HdProduction.Dashboard.Infrastructure.Services;
+using HdProduction.MessageQueue.RabbitMq;
 using HdProduction.Npgsql.Orm;
 using log4net;
 using MediatR;
@@ -67,6 +71,8 @@ namespace HdProduction.Dashboard.Api
 
             services.AddTransient<IDatabaseConnector, DatabaseConnector>(c => new DatabaseConnector(Configuration.GetConnectionString("Db")));
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Db")));
+
+            RegisterMessageQueue(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,7 +95,34 @@ namespace HdProduction.Dashboard.Api
             app.UseAuthentication();
             app.UseMvc();
 
+            app.SetEventConsumer()
+                .Subscribe<TestEvent>()
+                .StartConsuming();
+
             Logger.Info("Application is started");
         }
+
+        #region Registrations
+
+        private void RegisterMessageQueue(IServiceCollection services)
+        {
+            services.AddSingleton<IRabbitMqConnection>(
+                new RabbitMqConnection(Configuration.GetValue<string>("MessageQueue:Uri"), "hd_production"));
+            services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+            services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer("Dashboard",
+                c.GetService<IServiceProvider>(), c.GetService<IRabbitMqConnection>()));
+
+            foreach (var eventHandler in typeof(TestEventHandler).GetTypeInfo().Assembly.GetTypes()
+                .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().IsAssignableFrom(typeof(IEventHandler<>)))
+                            && !t.IsInterface))
+            {
+                foreach (var @interface in eventHandler.GetInterfaces()
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition().IsAssignableFrom(typeof(IEventHandler<>))))
+                {
+                    services.AddTransient(@interface, eventHandler);
+                }
+            }
+        }
+        #endregion
     }
 }

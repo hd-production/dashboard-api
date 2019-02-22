@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HdProduction.Dashboard.Api.Configuration
 {
-  public static class ConfigureServicesExtensions
+  public static class ConfigurationExtensions
   {
     public static IMvcCoreBuilder AddWebApi(this IServiceCollection services)
     {
