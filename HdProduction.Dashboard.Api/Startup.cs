@@ -12,6 +12,7 @@ using HdProduction.Dashboard.Infrastructure;
 using HdProduction.Dashboard.Infrastructure.Repositories;
 using HdProduction.Dashboard.Infrastructure.Services;
 using HdProduction.MessageQueue.RabbitMq;
+using HdProduction.MessageQueue.RabbitMq.Stubs;
 using HdProduction.Npgsql.Orm;
 using log4net;
 using MediatR;
@@ -106,11 +107,19 @@ namespace HdProduction.Dashboard.Api
 
         private void RegisterMessageQueue(IServiceCollection services)
         {
-            services.AddSingleton<IRabbitMqConnection>(
-                new RabbitMqConnection(Configuration.GetValue<string>("MessageQueue:Uri"), "hd_production"));
-            services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
-            services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer("Dashboard",
-                c.GetService<IServiceProvider>(), c.GetService<IRabbitMqConnection>()));
+            if (Configuration.GetValue<bool>("MessageQueue:Enabled"))
+            {
+                services.AddSingleton<IRabbitMqConnection>(
+                    new RabbitMqConnection(Configuration.GetValue<string>("MessageQueue:Uri"), "hd_production"));
+                services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+                services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer("Dashboard",
+                    c.GetService<IServiceProvider>(), c.GetService<IRabbitMqConnection>()));
+            }
+            else
+            {
+                services.AddSingleton<IRabbitMqPublisher, FakeMqPublisher>();
+                services.AddSingleton<IRabbitMqConsumer, FakeMqConsumer>();
+            }
 
             foreach (var eventHandler in typeof(TestEventHandler).GetTypeInfo().Assembly.GetTypes()
                 .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().IsAssignableFrom(typeof(IEventHandler<>)))
