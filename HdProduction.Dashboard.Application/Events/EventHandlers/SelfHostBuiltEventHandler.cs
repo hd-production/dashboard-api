@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Threading.Tasks;
-using HdProduction.BuildService.MessageQueue.Events;
 using HdProduction.Dashboard.Domain.Contracts;
 using HdProduction.MessageQueue.RabbitMq;
+using HdProduction.MessageQueue.RabbitMq.Events.AppBuilds;
 using log4net;
 
 namespace HdProduction.Dashboard.Application.Events.EventHandlers

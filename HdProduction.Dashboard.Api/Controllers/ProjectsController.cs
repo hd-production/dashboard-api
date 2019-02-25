@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using HdProduction.BuildService.MessageQueue.Events;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Extensions;
 using HdProduction.Dashboard.Api.Models.Projects;
@@ -9,7 +8,9 @@ using HdProduction.Dashboard.Application.Commands.Projects;
 using HdProduction.Dashboard.Application.Events;
 using HdProduction.Dashboard.Application.Models;
 using HdProduction.Dashboard.Application.Queries.Projects;
+using HdProduction.Dashboard.Domain.Entities.Builds;
 using HdProduction.Dashboard.Domain.Entities.Projects;
+using HdProduction.MessageQueue.RabbitMq.Events.AppBuilds;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,6 +68,12 @@ namespace HdProduction.Dashboard.Api.Controllers
       return Redirect(await _appBuildQuery.FindDownloadLinkAsync(projectId));
     }
 
+    [HttpPut("{projectId}/build/retry")]
+    public async Task RetryBuild(long projectId, [FromQuery] BuildType type, [FromQuery] long buildId)
+    {
+      await _mediator.Send(new RetryBuildProjectCmd(buildId, projectId, type));
+    }
+    
     [HttpPost("{projectId}/build")]
     public async Task TestBuild(long projectId)
     {

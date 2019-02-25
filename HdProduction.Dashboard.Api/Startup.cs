@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
-using HdProduction.Dashboard.Application.Events;
 using HdProduction.Dashboard.Application.Queries.Projects;
 using HdProduction.Dashboard.Application.Queries.Users;
 using HdProduction.Dashboard.Domain.Contracts;
@@ -20,8 +19,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using HdProduction.App.Common;
-using HdProduction.BuildService.MessageQueue.Events;
 using HdProduction.Dashboard.Application.Events.EventHandlers;
+using HdProduction.MessageQueue.RabbitMq.Events.AppBuilds;
 
 namespace HdProduction.Dashboard.Api
 {

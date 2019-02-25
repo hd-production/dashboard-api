@@ -1,3 +1,4 @@
+using System;
 using HdProduction.Dashboard.Domain.Entities.Builds;
 using HdProduction.Dashboard.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -6,18 +7,22 @@ using NpgsqlTypes;
 
 namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
 {
-  public class ProjectBuildConfiguration : IEntityTypeConfiguration<ProjectBuild>
+  public class ProjectBuildConfiguration : EntityBaseConfiguration<ProjectBuild, long>
   {
-    public void Configure(EntityTypeBuilder<ProjectBuild> builder)
+    protected override void ConfigureNext(EntityTypeBuilder<ProjectBuild> builder)
     {
       builder.ToTable(ProjectBuildMetadata.Table);
 
-      builder.HasKey(pb => pb.ProjectId);
+      builder.Property(pb => pb.ProjectId)
+        .IsRequired();
 
       builder.HasOne(pb => pb.Project)
         .WithMany(p => p.Builds)
         .HasForeignKey(pb => pb.ProjectId);
 
+      builder.Property(pb => pb.Type)
+        .IsRequired();
+      
       builder.Property(pb => pb.Status)
         .HasDefaultValue(BuildStatus.InProgress);
 
@@ -31,6 +36,12 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
       builder.Property(pb => pb.Error)
         .IsRequired(false)
         .HasColumnType(NpgsqlDbType.Text.ToSql());
+
+      builder.Property(pb => pb.LastUpdate)
+        .IsRequired()
+        .HasDefaultValue(DateTime.UtcNow);
+      
+      base.ConfigureNext(builder);
     }
   }
 }
