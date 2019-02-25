@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using HdProduction.BuildService.MessageQueue.Events;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Extensions;
 using HdProduction.Dashboard.Api.Models.Projects;
@@ -61,11 +62,19 @@ namespace HdProduction.Dashboard.Api.Controllers
     }
 
     [HttpGet("{projectId}/app_build")]
-    public async Task<FileStreamResult> DownloadAppBuild(long projectId)
+    public async Task<IActionResult> DownloadAppBuild(long projectId)
     {
-      await _mediator.Publish(new MqEventNotification(new TestEvent()));
-      var (stream, name) = await _appBuildQuery.DownloadArchiveAsync(projectId);
-      return File(stream, "application/zip", name);
+      return Redirect(await _appBuildQuery.FindDownloadLinkAsync(projectId));
+    }
+
+    [HttpPost("{projectId}/build")]
+    public async Task TestBuild(long projectId)
+    {
+      await _mediator.Publish(new MqEventNotification(new ProjectRequiresSelfHostBuildingEvent
+      {
+        ProjectId = projectId,
+        SelfHostConfiguration = (int) (await Get(projectId)).SelfHostSettings.BuildConfiguration
+      }));
     }
   }
 }

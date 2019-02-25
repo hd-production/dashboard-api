@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HdProduction.Dashboard.Domain.Entities.Builds;
 using HdProduction.Dashboard.Domain.Entities.Relational;
 
 namespace HdProduction.Dashboard.Domain.Entities.Projects
@@ -10,6 +11,7 @@ namespace HdProduction.Dashboard.Domain.Entities.Projects
       Name = name;
       SelfHostSettings = selfHostSettings;
       UserRights = UserRights ?? new List<UserProjectRights>();
+      Builds = Builds ?? new List<ProjectBuild>();
     }
 
     public string Name { get; private set; }
@@ -17,6 +19,7 @@ namespace HdProduction.Dashboard.Domain.Entities.Projects
     public SelfHostSettings SelfHostSettings { get; }
     
     public ICollection<UserProjectRights> UserRights { get; } // ef
+    public ICollection<ProjectBuild> Builds { get; } // ef
 
     public void Update(string name)
     {

@@ -1,36 +1,33 @@
-using System.IO;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Domain.Contracts;
+using HdProduction.Dashboard.Domain.Entities.Builds;
 using HdProduction.Dashboard.Domain.Exceptions;
 
 namespace HdProduction.Dashboard.Application.Queries.Projects
 {
   public interface IAppBuildQuery
   {
-    Task<(FileStream stream, string name)> DownloadArchiveAsync(long projectId);
+    Task<string> FindDownloadLinkAsync(long projectId);
   }
 
   public class AppBuildQuery : IAppBuildQuery
   {
-    private readonly IProjectRepository _projectRepository;
-    private readonly IHelpdeskBuildService _helpdeskBuildService;
+    private readonly IProjectBuildsRepository _buildsRepository;
 
-    public AppBuildQuery(IHelpdeskBuildService helpdeskBuildService, IProjectRepository projectRepository)
+    public AppBuildQuery(IProjectBuildsRepository buildsRepository)
     {
-      _helpdeskBuildService = helpdeskBuildService;
-      _projectRepository = projectRepository;
+      _buildsRepository = buildsRepository;
     }
 
-    public async Task<(FileStream stream, string name)> DownloadArchiveAsync(long projectId)
+    public async Task<string> FindDownloadLinkAsync(long projectId)
     {
-      var project = await _projectRepository.FindAsync(projectId) ?? throw new EntityNotFoundException("Project not found");
-      if (project.SelfHostSettings == null)
+      var build = await _buildsRepository.FindAsync(projectId) ?? throw new EntityNotFoundException("Project build not found");
+      if (build.Status != BuildStatus.Built)
       {
-        throw new BusinessLogicException("Project has no self host settings");
+        throw new BusinessLogicException("Project build is not ready for downloading");
       }
-      var archivePath = _helpdeskBuildService.BuildApp(project.SelfHostSettings.BuildConfiguration);
-      var stream = File.OpenRead(archivePath);
-      return (stream, Path.GetFileName(archivePath));
+
+      return build.LinkToDownload;
     }
   }
 }

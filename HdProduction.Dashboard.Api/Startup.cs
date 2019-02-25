@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
 using HdProduction.Dashboard.Application.Events;
@@ -10,9 +8,6 @@ using HdProduction.Dashboard.Domain.Contracts;
 using HdProduction.Dashboard.Domain.Entities.Projects;
 using HdProduction.Dashboard.Infrastructure;
 using HdProduction.Dashboard.Infrastructure.Repositories;
-using HdProduction.Dashboard.Infrastructure.Services;
-using HdProduction.MessageQueue.RabbitMq;
-using HdProduction.MessageQueue.RabbitMq.Stubs;
 using HdProduction.Npgsql.Orm;
 using log4net;
 using MediatR;
@@ -24,6 +19,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using HdProduction.App.Common;
+using HdProduction.BuildService.MessageQueue.Events;
+using HdProduction.Dashboard.Application.Events.EventHandlers;
 
 namespace HdProduction.Dashboard.Api
 {
@@ -57,6 +55,8 @@ namespace HdProduction.Dashboard.Api
             services.AddHttpContextAccessor();
             services.AddMediatR();
 
+            services.AddMessageQueue<SelfHostBuiltEventHandler>(Configuration.GetSection("MessageQueue"));
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserQuery, UserQuery>();
             services.AddSingleton<ISessionTokenService, JwtTokenService>(c => new JwtTokenService(Configuration.GetValue<string>("RsaKeysPath:Private")));
@@ -64,16 +64,14 @@ namespace HdProduction.Dashboard.Api
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectQuery, ProjectQuery>();
 
+            services.AddScoped<IProjectBuildsRepository, ProjectBuildRepository>();
             services.AddScoped<IAppBuildQuery, AppBuildQuery>();
-            services.AddScoped<IHelpdeskBuildService, HelpdeskBuildService>(c =>
-                new HelpdeskBuildService(Configuration.GetValue<string>("HelpdeskHostSources:Path")));
 
             services.AddSingleton(AutoMapperConfig.Configure());
 
             services.AddTransient<IDatabaseConnector, DatabaseConnector>(c => new DatabaseConnector(Configuration.GetConnectionString("Db")));
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Db")));
 
-            RegisterMessageQueue(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,7 +95,8 @@ namespace HdProduction.Dashboard.Api
             app.UseMvc();
 
             app.SetEventConsumer()
-                .Subscribe<TestEvent>()
+                .Subscribe<SelfHostBuiltEvent>()
+                .Subscribe<SelfHostBuildingFailedEvent>()
                 .StartConsuming();
 
             Logger.Info("Application is started");
@@ -105,33 +104,6 @@ namespace HdProduction.Dashboard.Api
 
         #region Registrations
 
-        private void RegisterMessageQueue(IServiceCollection services)
-        {
-            if (Configuration.GetValue<bool>("MessageQueue:Enabled"))
-            {
-                services.AddSingleton<IRabbitMqConnection>(
-                    new RabbitMqConnection(Configuration.GetValue<string>("MessageQueue:Uri"), "hd_production"));
-                services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
-                services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer("Dashboard",
-                    c.GetService<IServiceProvider>(), c.GetService<IRabbitMqConnection>()));
-            }
-            else
-            {
-                services.AddSingleton<IRabbitMqPublisher, FakeMqPublisher>();
-                services.AddSingleton<IRabbitMqConsumer, FakeMqConsumer>();
-            }
-
-            foreach (var eventHandler in typeof(TestEventHandler).GetTypeInfo().Assembly.GetTypes()
-                .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().IsAssignableFrom(typeof(IEventHandler<>)))
-                            && !t.IsInterface))
-            {
-                foreach (var @interface in eventHandler.GetInterfaces()
-                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition().IsAssignableFrom(typeof(IEventHandler<>))))
-                {
-                    services.AddTransient(@interface, eventHandler);
-                }
-            }
-        }
         #endregion
     }
 }
