@@ -1,15 +1,16 @@
 using HdProduction.MessageQueue.RabbitMq.Events;
+using HdProduction.MessageQueue.RabbitMq.Events.AppBuilds;
 using MediatR;
 
 namespace HdProduction.Dashboard.Application.Events
 {
   public class MqEventNotification : INotification
   {
-    public MqEventNotification(HdEvent @event)
+    public MqEventNotification(HdMessage @event)
     {
       Event = @event;
     }
 
-    public HdEvent Event { get; }
+    public HdMessage Event { get; }
   }
 }

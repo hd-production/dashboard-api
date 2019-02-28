@@ -54,7 +54,7 @@ namespace HdProduction.Dashboard.Api
             services.AddHttpContextAccessor();
             services.AddMediatR();
 
-            services.AddMessageQueue<SelfHostBuiltEventHandler>(Configuration.GetSection("MessageQueue"));
+            services.AddMessageQueue<SelfHostBuiltMessageHandler>(Configuration.GetSection("MessageQueue"));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserQuery, UserQuery>();
@@ -93,9 +93,9 @@ namespace HdProduction.Dashboard.Api
             app.UseAuthentication();
             app.UseMvc();
 
-            app.SetEventConsumer()
-                .Subscribe<SelfHostBuiltEvent>()
-                .Subscribe<SelfHostBuildingFailedEvent>()
+            app.SetMessageConsumer()
+                .Subscribe<SelfHostBuiltMessage>()
+                .Subscribe<SelfHostBuildingFailedMessage>()
                 .StartConsuming();
 
             Logger.Info("Application is started");

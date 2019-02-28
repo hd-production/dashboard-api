@@ -18,7 +18,7 @@ namespace HdProduction.Dashboard.Infrastructure.Repositories
     {
       return withTracking
         ? _context.ProjectBuilds.FindAsync(key)
-        : _context.ProjectBuilds.AsNoTracking().SingleAsync(pb => pb.ProjectId == key);
+        : _context.ProjectBuilds.AsNoTracking().SingleAsync(pb => pb.Id == key);
     }
 
     public IUnitOfWork UnitOfWork => _context;

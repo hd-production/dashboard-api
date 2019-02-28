@@ -73,15 +73,11 @@ namespace HdProduction.Dashboard.Api.Controllers
     {
       await _mediator.Send(new RetryBuildProjectCmd(buildId, projectId, type));
     }
-    
+
     [HttpPost("{projectId}/build")]
     public async Task TestBuild(long projectId)
     {
-      await _mediator.Publish(new MqEventNotification(new ProjectRequiresSelfHostBuildingEvent
-      {
-        ProjectId = projectId,
-        SelfHostConfiguration = (int) (await Get(projectId)).SelfHostSettings.BuildConfiguration
-      }));
+      await _mediator.Send(new BuildProjectCmd(projectId, BuildType.SelfHost));
     }
   }
 }
