@@ -11,7 +11,7 @@ namespace HdProduction.Dashboard.Application.Validations.Projects
         {
             RuleFor(t => t.Name).NotEmpty()
                 .WithMessage("Name can not be empty");
-            RuleFor(t => t.Name.Length).LessOrEqual(128)
+            RuleFor(t => t.Name?.Length).LessOrEqual(128)
                 .WithMessage("Name is too long");
 
             RuleFor(t => t.SelfHostSettings)

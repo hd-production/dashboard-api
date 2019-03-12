@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using HdProduction.App.Common;
+using HdProduction.App.Common.Auth;
 using HdProduction.Dashboard.Application.Events.EventHandlers;
 using HdProduction.MessageQueue.RabbitMq.Events.AppBuilds;
 

@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Security.Claims;
+using HdProduction.App.Common.Auth;
 using HdProduction.Dashboard.Domain.Contracts;
 using HdProduction.Dashboard.Domain.Entities.Users;
 using Microsoft.IdentityModel.Tokens;

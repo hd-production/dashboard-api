@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using HdProduction.Dashboard.Api.Auth;
+using HdProduction.App.Common.Auth;
 using HdProduction.Dashboard.Api.Extensions;
 using HdProduction.Dashboard.Api.Models.Sessions;
 using HdProduction.Dashboard.Application.Commands.Users;

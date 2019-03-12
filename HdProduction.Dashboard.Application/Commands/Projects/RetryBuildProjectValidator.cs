@@ -26,12 +26,12 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
                 .WithMessage("Build retry available only for failed builds");
 
             RuleFor(b => b?.LastUpdate).LessThan(DateTime.UtcNow.AddMinutes(-5))
-                .WithMessage("Retrying may be available only after ");
+                .WithMessage("Retrying is not available at the moment");
 
             RuleFor(b => b?.SelfHostConfiguration).NotNull()
                 .When(b => b.Type == BuildType.SelfHost)
                 .WithMessage("Self host configuration is not set");
-            
+
             return Task.CompletedTask;
         }
 

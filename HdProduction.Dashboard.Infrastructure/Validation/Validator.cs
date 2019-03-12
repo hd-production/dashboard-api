@@ -25,7 +25,10 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
     {
       _model = model;
       await SetValidations();
-      await Task.WhenAll(_validations.Select(v => v.CheckAsync(cancellationToken)).ToArray());
+      foreach (var validation in _validations)
+      {
+        await validation.CheckAsync(cancellationToken);
+      }
     }
 
     protected abstract Task SetValidations();
