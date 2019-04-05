@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using HdProduction.Dashboard.Api.Auth;
 using HdProduction.Dashboard.Api.Configuration;
 using HdProduction.Dashboard.Application.Queries.Projects;
@@ -21,7 +22,9 @@ using Swashbuckle.AspNetCore.Swagger;
 using HdProduction.App.Common;
 using HdProduction.App.Common.Auth;
 using HdProduction.Dashboard.Application.Events.EventHandlers;
+using HdProduction.MessageQueue.RabbitMq;
 using HdProduction.MessageQueue.RabbitMq.Events.AppBuilds;
+using HdProduction.MessageQueue.RabbitMq.Stubs;
 
 namespace HdProduction.Dashboard.Api
 {
@@ -55,8 +58,6 @@ namespace HdProduction.Dashboard.Api
             services.AddHttpContextAccessor();
             services.AddMediatR();
 
-            services.AddMessageQueue<SelfHostBuiltMessageHandler>(Configuration.GetSection("MessageQueue"));
-
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserQuery, UserQuery>();
             services.AddSingleton<ISessionTokenService, JwtTokenService>(c => new JwtTokenService(Configuration.GetValue<string>("RsaKeysPath:Private")));
@@ -72,6 +73,27 @@ namespace HdProduction.Dashboard.Api
             services.AddTransient<IDatabaseConnector, DatabaseConnector>(c => new DatabaseConnector(Configuration.GetConnectionString("Db")));
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Db")));
 
+            AddMessageQueue(services, Configuration.GetSection("MessageQueue"));
+        }
+
+        private static void AddMessageQueue(IServiceCollection services, IConfigurationSection mqConfigurationSection)
+        {
+            if (mqConfigurationSection.GetValue<bool>("Enabled"))
+            {
+                services.AddSingleton<IRabbitMqConnection>(
+                    new RabbitMqConnection(mqConfigurationSection.GetValue<string>("Uri"), "hd_production"));
+                services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+                services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer(
+                    mqConfigurationSection.GetValue<string>("ConsumerQueue"), c.GetService<IServiceProvider>(), c.GetService<IRabbitMqConnection>()));
+            }
+            else
+            {
+                services.AddSingleton<IRabbitMqPublisher, FakeMqPublisher>();
+                services.AddSingleton<IRabbitMqConsumer, FakeMqConsumer>();
+            }
+
+            services.AddTransient<IMessageHandler<SelfHostBuiltMessage>, SelfHostBuiltMessageHandler>();
+            services.AddTransient<IMessageHandler<SelfHostBuildingFailedMessage>, SelfHostBuiltMessageHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,13 +110,13 @@ namespace HdProduction.Dashboard.Api
             }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
-            app.UseCors(Configuration);
+            app.UseCors(Configuration.GetSection("Cors"));
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("v0/swagger.json", "HdProduction.Dashboard.Api"); });
             app.UseAuthentication();
             app.UseMvc();
 
-            app.SetMessageConsumer()
+            app.ResolveService<RabbitMqConsumer>()
                 .Subscribe<SelfHostBuiltMessage>()
                 .Subscribe<SelfHostBuildingFailedMessage>()
                 .StartConsuming();
