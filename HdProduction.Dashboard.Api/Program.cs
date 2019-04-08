@@ -15,6 +15,7 @@ namespace HdProduction.Dashboard.Api
     private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
       WebHost.CreateDefaultBuilder(args)
         .UseStartup<Startup>()
+        .UseUrls("http://localhost:5000")
         .ConfigureLogging((hostingContext, logging) => logging.AddLog4Net())
         .CaptureStartupErrors(true);
   }

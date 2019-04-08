@@ -83,13 +83,13 @@ namespace HdProduction.Dashboard.Api
                 services.AddSingleton<IRabbitMqConnection>(
                     new RabbitMqConnection(mqConfigurationSection.GetValue<string>("Uri"), "hd_production"));
                 services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
-                services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer(
+                services.AddTransient<IRabbitMqConsumer, RabbitMqConsumer>(c => new RabbitMqConsumer(
                     mqConfigurationSection.GetValue<string>("ConsumerQueue"), c.GetService<IServiceProvider>(), c.GetService<IRabbitMqConnection>()));
             }
             else
             {
                 services.AddSingleton<IRabbitMqPublisher, FakeMqPublisher>();
-                services.AddSingleton<IRabbitMqConsumer, FakeMqConsumer>();
+                services.AddTransient<IRabbitMqConsumer, FakeMqConsumer>();
             }
 
             services.AddTransient<IMessageHandler<SelfHostBuiltMessage>, SelfHostBuiltMessageHandler>();
@@ -116,7 +116,7 @@ namespace HdProduction.Dashboard.Api
             app.UseAuthentication();
             app.UseMvc();
 
-            app.ResolveService<RabbitMqConsumer>()
+            app.ResolveService<IRabbitMqConsumer>()
                 .Subscribe<SelfHostBuiltMessage>()
                 .Subscribe<SelfHostBuildingFailedMessage>()
                 .StartConsuming();
