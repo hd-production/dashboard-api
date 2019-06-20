@@ -24,7 +24,8 @@ namespace HdProduction.Dashboard.Api.Controllers
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
 
-    public ProjectsController(IProjectQuery query, IMediator mediator, IAppBuildQuery appBuildQuery, IMapper mapper)
+    public ProjectsController(IProjectQuery query, IMediator mediator, 
+      IAppBuildQuery appBuildQuery, IMapper mapper)
     {
       _query = query;
       _mediator = mediator;
@@ -67,15 +68,15 @@ namespace HdProduction.Dashboard.Api.Controllers
     }
 
     [HttpPut("{projectId}/build/retry")]
-    public async Task RetryBuild(long projectId, [FromQuery] BuildType type, [FromQuery] long buildId)
+    public Task RetryBuild(long projectId, [FromQuery] BuildType type, [FromQuery] long buildId)
     {
-      await _mediator.Send(new RetryBuildProjectCmd(buildId, projectId, type));
+      return _mediator.Send(new RetryBuildProjectCmd(buildId, projectId, type));
     }
 
     [HttpPost("{projectId}/build")]
-    public async Task TestBuild(long projectId)
+    public Task TestBuild(long projectId)
     {
-      await _mediator.Send(new BuildProjectCmd(projectId, BuildType.SelfHost));
+      return _mediator.Send(new BuildProjectCmd(projectId, BuildType.SelfHost));
     }
   }
 }

@@ -31,7 +31,7 @@ namespace HdProduction.Dashboard.Api.Configuration
       }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
       string message;
       var statusCode = HttpStatusCode.InternalServerError;
@@ -55,7 +55,7 @@ namespace HdProduction.Dashboard.Api.Configuration
       var result = JsonConvert.SerializeObject(new {message});
       context.Response.ContentType = "application/json";
       context.Response.StatusCode = (int)statusCode;
-      await context.Response.WriteAsync(result);
+      return context.Response.WriteAsync(result);
     }
   }
 }

@@ -17,9 +17,10 @@ namespace HdProduction.Dashboard.Infrastructure.Repositories
 
     public Task<Project> FindAsync(long id, bool withTracking = true)
     {
+      var projectsData = _context.Projects.Include(p => p.Builds);
       return withTracking
-        ? _context.Projects.FindAsync(id)
-        : _context.Projects.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        ? projectsData.FirstOrDefaultAsync(u => u.Id == id)
+        : projectsData.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public IUnitOfWork UnitOfWork => _context;
