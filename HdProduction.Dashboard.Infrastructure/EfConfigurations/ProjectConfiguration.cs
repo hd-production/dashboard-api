@@ -19,6 +19,11 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
         .IsRequired(false)
         .HasConversion(new JsonValueConverter<SelfHostSettings>())
         .HasColumnType("Json");
+      
+      builder.Property(p => p.DefaultAdminSettings)
+        .IsRequired(false)
+        .HasConversion(new JsonValueConverter<DefaultAdminSettings>())
+        .HasColumnType("Json");
 
       base.ConfigureNext(builder);
     }

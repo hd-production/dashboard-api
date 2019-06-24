@@ -21,18 +21,12 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
 
     public async Task<long> Handle(CreateProjectCmd request, CancellationToken cancellationToken)
     {
-      using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
-      {
         var project = new Project(request.Name, request.SelfHostSettings, request.DefaultAdminSettings);
         _projectRepository.Add(project);
-        await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
         _projectRepository.Add(new UserProjectRights(request.UserId, project.Id, ProjectRight.Creator));
         await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        transaction.Commit();
         return project.Id;
-      }
     }
   }
 }
