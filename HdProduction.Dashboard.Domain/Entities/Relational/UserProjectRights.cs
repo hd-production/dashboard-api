@@ -12,9 +12,9 @@ namespace HdProduction.Dashboard.Domain.Entities.Relational
       Right = right;
     }
 
-    public long UserId { get; }
-    public long ProjectId { get; }
-    public ProjectRight Right { get; }
+    public long UserId { get; private set; }
+    public long ProjectId { get; private set; }
+    public ProjectRight Right { get; private set; }
 
     public User User { get; set; } // ef
     public Project Project { get; set; } // ef

@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using System.Threading.Tasks;
 using HdProduction.Dashboard.Application.Commands.Projects;
 using HdProduction.Dashboard.Domain.Entities.Projects;
@@ -18,6 +19,10 @@ namespace HdProduction.Dashboard.Application.Validations.Projects
                 .SetModelValidator(new SelfHostSettingsValidator())
                 .When(t => t.SelfHostSettings != null);
 
+            RuleFor(t => t.DefaultAdminSettings)
+                .SetModelValidator(new DefaultAdminSettingsValidator())
+                .When(t => t.DefaultAdminSettings != null);
+
             return Task.CompletedTask;
         }
     }
@@ -28,6 +33,21 @@ namespace HdProduction.Dashboard.Application.Validations.Projects
         {
             RuleFor(t => t.BuildConfiguration).ValidEnum()
                 .WithMessage("Invalid build configuration");
+
+            return Task.CompletedTask;
+        }
+    }
+    
+    public class DefaultAdminSettingsValidator : Validator<DefaultAdminSettings>
+    {
+        protected override Task SetValidations()
+        {
+            RuleFor(t => t.FirstName).NotEmpty()
+                .WithMessage("Name can't be empty");
+            RuleFor(t => t.LastName).NotEmpty()
+                .WithMessage("Name can't be empty");
+            RuleFor(t => t.Email).MustNotThrow(e => new MailAddress(e))
+                .WithMessage("Invalid email");
 
             return Task.CompletedTask;
         }

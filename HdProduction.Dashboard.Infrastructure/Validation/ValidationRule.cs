@@ -156,6 +156,40 @@ namespace HdProduction.Dashboard.Infrastructure.Validation
 
     public ValidationRule<T, TProperty> ValidEnum() => Must(p => Enum.IsDefined(typeof(TProperty), p));
 
+    public ValidationRule<T, TProperty> MustThrow(Action<TProperty> check) => MustThrow<Exception>(check);
+    
+    public ValidationRule<T, TProperty> MustThrow<TException>(Action<TProperty> check) where TException : Exception
+    {
+      return Must(p => {
+        try
+        {
+          check(p);
+        }
+        catch (TException)
+        {
+          return true;
+        }
+        return false;
+      });
+    }
+    
+    public ValidationRule<T, TProperty> MustNotThrow(Action<TProperty> check) => MustNotThrow<Exception>(check);
+    
+    public ValidationRule<T, TProperty> MustNotThrow<TException>(Action<TProperty> check) where TException : Exception
+    {
+      return Must(p => {
+        try
+        {
+          check(p);
+        }
+        catch (TException)
+        {
+          return false;
+        }
+        return true;
+      });
+    }
+    
     #endregion
   }
 }

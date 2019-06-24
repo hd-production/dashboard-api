@@ -46,7 +46,7 @@ namespace HdProduction.Dashboard.Application.Queries.Projects
 //    }
 
     public async Task<ProjectReadModel> GetAsync(long id) =>
-      _mapper.Map<ProjectReadModel>(await _repository.FindAsync(id));
+      _mapper.Map<ProjectReadModel>(await _repository.FindAsync(id, false));
 
     public async Task<IReadOnlyCollection<ProjectGridReadModel>> GetAllAsync(long userId)
     {

@@ -20,8 +20,8 @@ namespace HdProduction.Dashboard.Domain.Entities.Projects
     public SelfHostSettings SelfHostSettings { get; private set; }
     public DefaultAdminSettings DefaultAdminSettings { get; private set; }
     
-    public ICollection<UserProjectRights> UserRights { get; } // ef
-    public ICollection<ProjectBuild> Builds { get; } // ef
+    public ICollection<UserProjectRights> UserRights { get; set; } // ef
+    public ICollection<ProjectBuild> Builds { get; set; } // ef
 
     public void Update(string name, SelfHostSettings selfHostSettings, DefaultAdminSettings defaultAdminSettings)
     {

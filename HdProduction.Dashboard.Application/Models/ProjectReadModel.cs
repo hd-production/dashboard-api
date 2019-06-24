@@ -9,6 +9,7 @@ namespace HdProduction.Dashboard.Application.Models
   {
     public long Id { get; set; }
     public string Name { get; set; }
+    public string Status { get; set; }
     public SelfHostSettingsReadModel SelfHostSettings { get; set; }
     public List<ProjectBuildReadModel> Builds { get; set; }  
   }
@@ -31,6 +32,8 @@ namespace HdProduction.Dashboard.Application.Models
 
   public class DefaultAdminSettingsReadModel
   {
-    
+    public string FirstName { set; get; }
+    public string LastName { set; get; }
+    public string Email { get; set; }
   }
 }

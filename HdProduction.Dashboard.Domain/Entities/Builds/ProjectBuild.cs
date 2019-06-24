@@ -22,8 +22,6 @@ namespace HdProduction.Dashboard.Domain.Entities.Builds
     public string Error { get; private set; }
     public DateTime LastUpdate { get; private set; }
     
-    public Project Project { get; set; } // ef
-
     public void MarkBuilt(string linkToDownload)
     {
       Status = BuildStatus.Built;

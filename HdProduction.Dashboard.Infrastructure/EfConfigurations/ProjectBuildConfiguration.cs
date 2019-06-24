@@ -16,10 +16,6 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
       builder.Property(pb => pb.ProjectId)
         .IsRequired();
 
-      builder.HasOne(pb => pb.Project)
-        .WithMany(p => p.Builds)
-        .HasForeignKey(pb => pb.ProjectId);
-
       builder.Property(pb => pb.Type)
         .IsRequired();
       

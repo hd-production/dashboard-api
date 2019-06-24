@@ -15,6 +15,8 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
         .IsRequired()
         .HasMaxLength(128);
 
+      builder.Property(p => p.Status).HasDefaultValue(ProjectStatus.Pending);
+      
       builder.Property(p => p.SelfHostSettings)
         .IsRequired(false)
         .HasConversion(new JsonValueConverter<SelfHostSettings>())
@@ -24,6 +26,10 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
         .IsRequired(false)
         .HasConversion(new JsonValueConverter<DefaultAdminSettings>())
         .HasColumnType("Json");
+
+      builder.HasMany(p => p.Builds)
+        .WithOne()
+        .HasForeignKey(pb => pb.ProjectId);
 
       base.ConfigureNext(builder);
     }
