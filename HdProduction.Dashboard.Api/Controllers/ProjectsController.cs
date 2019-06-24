@@ -43,15 +43,16 @@ namespace HdProduction.Dashboard.Api.Controllers
     public async Task<ProjectReadModel> Create([FromBody] ProjectCreateRequestModel requestModel)
     {
       var id = await _mediator.Send(new CreateProjectCmd(
-        requestModel.Name, _mapper.Map<SelfHostSettings>(requestModel.SelfHostSettings), User.GetId()));
+        requestModel.Name, User.GetId()));
       return await Get(id);
     }
 
     [HttpPut("{projectId}"), Authorize(Policy = Policy.ProjectAdminAccess)]
-    public async Task<ProjectReadModel> Update(long projectId, [FromBody] ProjectCreateRequestModel requestModel)
+    public async Task<ProjectReadModel> Update(long projectId, [FromBody] ProjectUpdateRequestModel requestModel)
     {
       await _mediator.Send(new UpdateProjectCmd(
-        projectId, requestModel.Name, _mapper.Map<SelfHostSettings>(requestModel.SelfHostSettings),User.GetId()));
+        projectId, requestModel.Name, _mapper.Map<SelfHostSettings>(requestModel.SelfHostSettings),
+        _mapper.Map<DefaultAdminSettings>(requestModel.DefaultAdminSettings), User.GetId()));
       return await Get(projectId);
     }
 
@@ -61,6 +62,13 @@ namespace HdProduction.Dashboard.Api.Controllers
       return _mediator.Send(new DeleteProjectCmd(projectId, User.GetId()));
     }
 
+    [HttpPut("{projectId}/run"), Authorize(Policy = Policy.ProjectAdminAccess)]
+    public async Task<ProjectReadModel> Run(long projectId)
+    {
+      await _mediator.Send(new RunProjectCmd(projectId, User.GetId()));
+      return await Get(projectId);
+    }
+    
     [HttpGet("{projectId}/app_build")]
     public async Task<IActionResult> DownloadAppBuild(long projectId)
     {
@@ -76,7 +84,7 @@ namespace HdProduction.Dashboard.Api.Controllers
     [HttpPost("{projectId}/build")]
     public Task TestBuild(long projectId)
     {
-      return _mediator.Send(new BuildProjectCmd(projectId, BuildType.SelfHost));
+      return _mediator.Send(new BuildProjectCmd(projectId, BuildType.SelfHost, SelfHostBuildConfiguration.MySql));
     }
   }
 }

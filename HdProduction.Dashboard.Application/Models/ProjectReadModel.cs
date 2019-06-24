@@ -28,4 +28,9 @@ namespace HdProduction.Dashboard.Application.Models
   {
     public SelfHostBuildConfiguration BuildConfiguration { get; set; }
   }
+
+  public class DefaultAdminSettingsReadModel
+  {
+    
+  }
 }

@@ -6,24 +6,33 @@ namespace HdProduction.Dashboard.Domain.Entities.Projects
 {
   public class Project : EntityBase<long>
   {
-    public Project(string name, SelfHostSettings selfHostSettings)
+    public Project(string name, SelfHostSettings selfHostSettings, DefaultAdminSettings defaultAdminSettings)
     {
       Name = name;
       SelfHostSettings = selfHostSettings;
+      DefaultAdminSettings = defaultAdminSettings;
       UserRights = UserRights ?? new List<UserProjectRights>();
       Builds = Builds ?? new List<ProjectBuild>();
     }
 
     public string Name { get; private set; }
-    
-    public SelfHostSettings SelfHostSettings { get; }
+    public ProjectStatus Status { get; private set; }
+    public SelfHostSettings SelfHostSettings { get; private set; }
+    public DefaultAdminSettings DefaultAdminSettings { get; private set; }
     
     public ICollection<UserProjectRights> UserRights { get; } // ef
     public ICollection<ProjectBuild> Builds { get; } // ef
 
-    public void Update(string name)
+    public void Update(string name, SelfHostSettings selfHostSettings, DefaultAdminSettings defaultAdminSettings)
     {
       Name = name;
+      SelfHostSettings = selfHostSettings;
+      DefaultAdminSettings = defaultAdminSettings;
+    }
+
+    public void Run()
+    {
+      Status = ProjectStatus.Running;
     }
   }
 

@@ -32,5 +32,10 @@ namespace HdProduction.Dashboard.Infrastructure.Repositories
     {
       _context.Remove(entity);
     }
+
+    public Task<ProjectBuild> FindByProjectAsync(long projectId)
+    {
+      return _context.ProjectBuilds.FirstOrDefaultAsync(pb => pb.ProjectId == projectId);
+    }
   }
 }

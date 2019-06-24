@@ -17,7 +17,7 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
     public async Task<Unit> Handle(UpdateProjectCmd request, CancellationToken cancellationToken)
     {
       var project = await _projectRepository.FindAsync(request.Id);
-      project.Update(request.Name);
+      project.Update(request.Name, request.SelfHostSettings, request.DefaultAdminSettings);
 
       await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
       return Unit.Value;

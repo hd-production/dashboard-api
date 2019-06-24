@@ -5,6 +5,6 @@ namespace HdProduction.Dashboard.Api.Models.Projects
   public class ProjectCreateRequestModel
   {
     public string Name { get; set; }
-    public SelfHostSettingsReadModel SelfHostSettings { get; set; }
+
   }
 }

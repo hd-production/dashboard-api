@@ -23,7 +23,7 @@ namespace HdProduction.Dashboard.Application.Commands.Projects
     {
       using (var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken))
       {
-        var project = new Project(request.Name, request.SelfHostSettings);
+        var project = new Project(request.Name, request.SelfHostSettings, request.DefaultAdminSettings);
         _projectRepository.Add(project);
         await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
