@@ -18,11 +18,6 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
         .HasForeignKey(up => up.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
-      builder.HasOne(up => up.Project)
-        .WithMany(p => p.UserRights)
-        .HasForeignKey(up => up.ProjectId)
-        .OnDelete(DeleteBehavior.Cascade);
-
       builder.Property(up => up.Right)
         .IsRequired();
     }

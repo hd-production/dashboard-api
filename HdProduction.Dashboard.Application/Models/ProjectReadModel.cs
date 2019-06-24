@@ -11,6 +11,7 @@ namespace HdProduction.Dashboard.Application.Models
     public string Name { get; set; }
     public string Status { get; set; }
     public SelfHostSettingsReadModel SelfHostSettings { get; set; }
+    public DefaultAdminSettings DefaultAdminSettings { get; set; }
     public List<ProjectBuildReadModel> Builds { get; set; }  
   }
 

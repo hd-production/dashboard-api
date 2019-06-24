@@ -29,7 +29,13 @@ namespace HdProduction.Dashboard.Infrastructure.EfConfigurations
 
       builder.HasMany(p => p.Builds)
         .WithOne()
-        .HasForeignKey(pb => pb.ProjectId);
+        .HasForeignKey(pb => pb.ProjectId)
+        .OnDelete(DeleteBehavior.Cascade);
+      
+      builder.HasMany(up => up.UserRights)
+        .WithOne()
+        .HasForeignKey(up => up.ProjectId)
+        .OnDelete(DeleteBehavior.Cascade);
 
       base.ConfigureNext(builder);
     }

@@ -17,7 +17,6 @@ namespace HdProduction.Dashboard.Domain.Entities.Relational
     public ProjectRight Right { get; private set; }
 
     public User User { get; set; } // ef
-    public Project Project { get; set; } // ef
   }
 
   public class UserProjectRightsMetadata : EntityMetadata<UserProjectRightsMetadata>
